@@ -1,12 +1,13 @@
 import Modal from "react-bootstrap/Modal";
-import { useState, useRef } from "react";
+import { useState, useRef,useEffect } from "react";
 
-import { toggleAddHints } from "../../../store/adminAppCommonStates";
-import { useAppDispatch } from "../../../store/config/hooks";
+import { appCommonSliceRes, toggleAddHints } from "../../../store/adminAppCommonStates";
+import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
 
 const HintsModal = (props: any) => {
   const dispatch = useAppDispatch();
-  
+  const appOperatins = useAppSelector(appCommonSliceRes);
+
   const hintsModalArr: any = [];
   const inputScriptHint: any = useRef("");
   const [showAlert, setShowAlert] = useState(false);
@@ -16,12 +17,24 @@ const HintsModal = (props: any) => {
   const [counterAdd, setCounterAdd] = useState(0);
   const [checkTextHint, setCheckTextHint] = useState(false);
   const [checkScriptHint, setCheckScriptHint] = useState(false);
+  
 
-  const hintSaveHandler = (event: any) => {
+// Check click outside - starts
+useEffect(()=>{
+  setCheckTextHint(false);
+  setCheckScriptHint(false);
+  setCounterAdd(0);
+  setInputFields([{ value: "" }]);
+},[appOperatins.hintsFlush]);
+  
+// Check click outside - Ends
+const hintSaveHandler = (event: any) => {
     event.preventDefault();
-    if (checkTextHint === true && checkScriptHint ===false) {
+    if (checkTextHint === true && checkScriptHint === false) {
       if (inputFields[0].value === "") {
-        setAlertMessage("Please enter the Textual Hints and remove the unwanted hint");
+        setAlertMessage(
+          "Please enter the Textual Hints and remove the unwanted hint"
+        );
         setShowAlert(true);
       } else {
         hintsModalArr.push({
@@ -52,30 +65,29 @@ const HintsModal = (props: any) => {
         props.onHide();
       }
     }
-    
-    if (checkScriptHint ===true && checkScriptHint ===true) {
+
+    if (checkScriptHint === true && checkScriptHint === true) {
       console.log("came into both true block");
       if (inputFields[0].value === "" && inputScriptHint.current.value === "") {
         setAlertMessage("Please enter the hints or Unselect the checkbox");
         setShowAlert(true);
-      }
-      else if (inputScriptHint.current.value === "") {
+      } else if (inputScriptHint.current.value === "") {
         setAlertMessage("Please enter the Script");
         setShowAlert(true);
-      }
-      else if (inputFields[0].value === "") {
-        setAlertMessage("Please enter the Textual Hints and remove the unwanted hint");
+      } else if (inputFields[0].value === "") {
+        setAlertMessage(
+          "Please enter the Textual Hints and remove the unwanted hint"
+        );
         setShowAlert(true);
-      }
-      else{
+      } else {
         hintsModalArr.push({
           hintType: "TextandScriptHints",
-          textHint:{
-            hint:inputFields
+          textHint: {
+            hint: inputFields,
           },
-          scriptHint:{
-          hint: inputScriptHint.current.value
-          }
+          scriptHint: {
+            hint: inputScriptHint.current.value,
+          },
         });
         console.log("The saved hints - ", JSON.stringify(hintsModalArr));
         localStorage.setItem("HintsModal", JSON.stringify(hintsModalArr));
@@ -83,12 +95,9 @@ const HintsModal = (props: any) => {
         setCheckScriptHint(false);
         setCheckTextHint(false);
         props.onHide();
-
       }
-
     }
-    
-};
+  };
 
   function handleAddField() {
     setCounterAdd(counterAdd + 1);
@@ -172,9 +181,9 @@ const HintsModal = (props: any) => {
               Script Hints
             </label>
           </div>
-        {checkTextHint === true && (
-          <div>
-            <br />
+          {checkTextHint === true && (
+            <div>
+              <br />
               <h5 className="text-center text-muted">Textual Hints</h5>
               {inputFields.map((inputField, index) => (
                 <div key={index}>
@@ -211,15 +220,15 @@ const HintsModal = (props: any) => {
           <br />
           {checkScriptHint === true && (
             <div>
-            <h5 className="text-center text-muted">Script Hints</h5>
-            <div className="input-group mb-3">
-              <textarea
-                className="form-control"
-                ref={inputScriptHint}
-                placeholder="Your Script hint goes here"
-                aria-label="Your Script hint goes here"
-              ></textarea>
-            </div>
+              <h5 className="text-center text-muted">Script Hints</h5>
+              <div className="input-group mb-3">
+                <textarea
+                  className="form-control"
+                  ref={inputScriptHint}
+                  placeholder="Your Script hint goes here"
+                  aria-label="Your Script hint goes here"
+                ></textarea>
+              </div>
             </div>
           )}
           {showAlert && (

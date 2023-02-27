@@ -8,13 +8,22 @@ import * as func from "../Sources/ts/GraphFunctions";
 import ToolsView from "./ToolsView/ToolsView";
 
 import { useAppDispatch, useAppSelector } from "../../store/config/hooks";
-import { appCommonSliceRes, saveGraphBtn, toggleAddHints, toggleAddQues } from "../../store/adminAppCommonStates";
+import {
+  appCommonSliceRes,
+  saveGraphBtn,
+  toggleAddHints,
+  toggleAddQues,
+} from "../../store/adminAppCommonStates";
 
 const GraphEditor = () => {
-  
   const appOperations = useAppSelector(appCommonSliceRes);
-  localStorage.setItem('LinkDirection',JSON.stringify(appOperations.linkDirection));
-  
+  const dispatch = useAppDispatch();
+  localStorage.setItem(
+    "LinkDirection",
+    JSON.stringify(appOperations.linkDirection)
+  );
+  const arrOfIdBlue: any = [];
+
   const nameInputRef: any = useRef("");
   let nameAlreadyExists: boolean;
   const canvas: any = useRef(null);
@@ -26,10 +35,7 @@ const GraphEditor = () => {
   const [hintsModal, setHintsModal] = useState("");
   const [jsonCall, setJsonCall] = useState(false);
 
-  const dispatch = useAppDispatch();
-  
   const disableSaveGraphBtn = () => {
-    
     dispatch(saveGraphBtn(false));
   };
 
@@ -49,6 +55,16 @@ const GraphEditor = () => {
     event.preventDefault();
     setShowNameEdit(false);
   }
+
+  // Clear LocalStorage on reload - Starts
+  useEffect(() => {
+    window.addEventListener("beforeunload", func.clearLocalStorage);
+
+    return () => {
+      window.removeEventListener("beforeunload", func.clearLocalStorage);
+    };
+  }, []);
+  // Clear LocalStorage on reload - Ends
 
   useEffect(() => {
     const graph = new joint.dia.Graph({}, { cellNamespace: joint.shapes });
@@ -72,7 +88,7 @@ const GraphEditor = () => {
     let contextMenuX = 240;
     let contextMenuY = 30;
 
-    paper.on("blank:contextmenu", function (evt:any, x:any, y:any) {
+    paper.on("blank:contextmenu", function (evt: any, x: any, y: any) {
       let popupCoordinate = paper.localToPagePoint(x, y);
       $("#" + iden.dom_itemdifier_ctxMenu).css({
         top: popupCoordinate.y + "px",
@@ -94,19 +110,21 @@ const GraphEditor = () => {
     paper.on({
       "element:contextmenu": onElementRightClick,
     });
-    paper.on("cell:pointerclick", function (cellView:any, evt:any, x:any, y:any) {
-      
-      linkCreationMode = func.linkCreationEnd(
-        linkCreationMode,
-        targetCell,
-        cellView,
-        graph,
-        sourceCell,
-        appOperations.linkDirection
-      );
-    });
+    paper.on(
+      "cell:pointerclick",
+      function (cellView: any, evt: any, x: any, y: any) {
+        linkCreationMode = func.linkCreationEnd(
+          linkCreationMode,
+          targetCell,
+          cellView,
+          graph,
+          sourceCell,
+          appOperations.linkDirection
+        );
+      }
+    );
     // Change for link click -- Starts
-    paper.on("element:pointerdblclick", (elementView:any) => {
+    paper.on("element:pointerdblclick", (elementView: any) => {
       console.log("Enter into the element DBClick");
       const graphLinks = graph.getLinks();
       for (const link of graphLinks) {
@@ -114,6 +132,49 @@ const GraphEditor = () => {
         // console.log("link item - ",link.attributes.type);
       }
       getNameForNode(elementView);
+    });
+
+    paper.on("element:pointerclick", (element: any) => {
+      const isGraphicalHint = localStorage.getItem("GraphicalHint");
+      const index = arrOfIdBlue.indexOf(element.model.attributes.id);
+      if (isGraphicalHint === "true") {
+        if (element.model.attributes.attrs.body.stroke === "black") {
+          element.model.attr("body/stroke", "blue");
+          if (index === -1) {
+            arrOfIdBlue.push(element.model.attributes.id);
+          } else{
+            arrOfIdBlue.splice(index, 1);
+          }
+          console.log("Clicked elements: " + arrOfIdBlue);
+        } 
+        
+        else{
+          if(element.model.attributes.attrs.body.stroke === "blue"){
+            arrOfIdBlue.splice(index, 1);
+          }
+          element.model.attr("body/stroke", "black");
+          console.log("Clicked elements: " + arrOfIdBlue);
+        }
+        console.log("Clicked elements: " + arrOfIdBlue);
+        // console.log("clicked in the elem  - ",element.model.attributes.id);
+      }
+    });
+    paper.on("link:pointerclick", (link: any) => {
+      console.log("clicked in the link id - ", link.model.attributes.id);
+      console.log("clicked in the link name - ", link.model.attributes.type);
+    });
+    $("#" + iden.getIdForGraphicalHint).click(() => {
+      paper.model.getElements().forEach(function (element) {
+        // Check if the element's body stroke is blue
+        if (element.attr("body/stroke") === "blue") {
+          // If it is, log the element's id to the console
+          console.log(
+            "Element with id " + element.id + " has a blue body stroke."
+          );
+          arrOfIdBlue.push(element.id);
+        }
+      });
+      console.log("Elements selected - ", arrOfIdBlue);
     });
 
     // paper.on("link:pointerdblclick", (linkView) => {
@@ -153,12 +214,12 @@ const GraphEditor = () => {
     // Change for link click -- Ends
 
     // Extra code for Deleting the Links - Starts
-    paper.on("link:pointerdblclick", (linkView:any) => {
+    paper.on("link:pointerdblclick", (linkView: any) => {
       console.log("SRK Click called by the element");
       let link = linkView.model;
-      console.log("the cid of the thing is like - ",link);
+      console.log("the cid of the thing is like - ", link);
       link.remove();
-      });
+    });
     // Extra code for Deleting the Links - Ends
 
     $("#" + iden.SaveGraph).click(() => {
@@ -175,7 +236,6 @@ const GraphEditor = () => {
       dispatch(saveGraphBtn(false));
       dispatch(toggleAddQues(false));
       dispatch(toggleAddHints(false));
-      
       graph.clear();
       // localStorage.clear();
     });
@@ -311,6 +371,20 @@ const GraphEditor = () => {
                 </div>
               </div>
             )}
+            <br />
+            {appOperations.graphicalHint === true && (
+              <div className="card" style={{ width: "18rem" }}>
+                <div className="card-body">
+                  <h5 className="card-title text-center">Graphical Hints</h5>
+                  <h6 className="card-subtitle mb-2 text-muted text-center">
+                    Click the elememt or link
+                  </h6>
+                </div>
+              </div>
+            )}
+            {/* <button className="btn btn-secondary" id="getIdForGraphicalHint">
+              Check
+            </button> */}
             {jsonCall && (
               <div className="card" style={{ width: "18rem" }}>
                 <div className="card-body">

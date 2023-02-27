@@ -4,7 +4,14 @@ import circle from "../../Sources/assets/circle.jpg";
 import rectangle from "../../Sources/assets/rectangle.jpg";
 
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
-import {appCommonSliceRes, toggleAddHints, toggleAddQues, toggleLinkDirection} from "../../../store/adminAppCommonStates";
+import {
+  appCommonSliceRes,
+  hintsFlushCall,
+  passGraphicalHintsOpen,
+  toggleAddHints,
+  toggleAddQues,
+  toggleLinkDirection,
+} from "../../../store/adminAppCommonStates";
 import { saveGraphBtn } from "../../../store/adminAppCommonStates";
 
 import QuestionModal from "../PopupModal/QuestionModal";
@@ -12,12 +19,13 @@ import HintsModal from "../PopupModal/HintsModal";
 
 const ToolsView = () => {
   const appOperations = useAppSelector(appCommonSliceRes);
-  const dispatch =  useAppDispatch();
-  
+  const dispatch = useAppDispatch();
+
+  const [graphicalHints, setGraphicalHints] = useState(false);
 
   const [modalQuesShow, setQuesModalShow] = useState(false);
   const [modalHintShow, setHintModalShow] = useState(false);
-  
+
   const saveGraphNavigation = () => {
     if (appOperations.saveGraphToggle === false) {
       dispatch(saveGraphBtn(true));
@@ -33,14 +41,13 @@ const ToolsView = () => {
     dispatch(toggleAddHints(false));
   };
   const [isDirected, setIsDirected] = useState(false);
-  
 
   const handleToggle = () => {
     setIsDirected(!isDirected);
     dispatch(toggleLinkDirection(!isDirected));
   };
-  
-return (
+
+  return (
     <Fragment>
       <header className="d-block p-2 bg-primary text-white text-center rounded blockquote">
         TOOLS VIEW
@@ -48,9 +55,14 @@ return (
       <div className="card" style={{ width: "18rem" }}>
         <div className="card-body">
           <h5 className="card-title text-center">GRAPH TYPE</h5>
-          <h6 className="card-subtitle mb-2 text-muted text-center">Directed/Undirected</h6>
+          <h6 className="card-subtitle mb-2 text-muted text-center">
+            Directed/Undirected
+          </h6>
           {/* Toggle button  -- Start*/}
-          <div className="form-check form-switch"  style={{marginLeft: "4rem"}}>
+          <div
+            className="form-check form-switch"
+            style={{ marginLeft: "4rem" }}
+          >
             <input
               className="form-check-input"
               type="checkbox"
@@ -107,7 +119,7 @@ return (
               />
               {appOperations.toggleAddQues && (
                 <div className="card-header bg-info text-white rounded">
-                  Question Added{" "}
+                  Question Added
                   <a
                     href="#"
                     className="fa fa-trash-o"
@@ -124,19 +136,56 @@ return (
               <div className="card-body">
                 <h5 className="card-title text-center">Hints</h5>
                 {!appOperations.toggleAddHints && (
-                  <h6 className="card-subtitle mb-2 text-muted text-center">
-                    <a href="#" onClick={() => setHintModalShow(true)}>
-                      Add Hints
-                    </a>
-                  </h6>
+                  <Fragment>
+                    <h6 className="card-subtitle mb-2 text-muted text-center">
+                      <a
+                        href="#"
+                        onClick={() => {
+                          setHintModalShow(true);
+                          dispatch(hintsFlushCall(true));
+                        }}
+                      >
+                        Add Hints
+                      </a>
+                    </h6>
+                    <br />
+                    {/* Toggle button  -- Start*/}
+                    <div
+                      className="form-check form-switch"
+                      style={{ marginLeft: "2rem" }}
+                    >
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="toggleSwitch"
+                        onChange={(e) => {
+                          setGraphicalHints(!graphicalHints);
+                          dispatch(passGraphicalHintsOpen(!graphicalHints));
+                          localStorage.setItem("GraphicalHint",JSON.stringify(!graphicalHints));
+                        }}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="toggleSwitch"
+                      >
+                        <h5 className="card-title text-center">
+                          Graphical Hints
+                        </h5>
+                      </label>
+                    </div>
+                    {/* Toggle button  -- Ends*/}
+                  </Fragment>
                 )}
                 <HintsModal
                   show={modalHintShow}
-                  onHide={() => setHintModalShow(false)}
+                  onHide={() => {
+                    setHintModalShow(false);
+                    dispatch(hintsFlushCall(false));
+                  }}
                 />
                 {appOperations.toggleAddHints && (
                   <div className="card-header bg-info text-white rounded">
-                    Hints Added{" "}
+                    Hints Added
                     <a
                       href="#"
                       className="fa fa-trash-o"

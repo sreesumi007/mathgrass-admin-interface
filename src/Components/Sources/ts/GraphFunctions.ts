@@ -89,3 +89,6 @@ export function onClearGraphCall(){
   nameInputArray=[];
   console.log('Array value - ',nameInputArray)
 }
+export const clearLocalStorage = () => {
+  localStorage.clear();
+};
