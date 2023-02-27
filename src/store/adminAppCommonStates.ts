@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./config/store";
 
 export interface AppState {
@@ -9,6 +9,9 @@ export interface AppState {
   toggleAddHints: boolean;
   hintsFlush: boolean;
   graphicalHint: boolean;
+  graphicalElemLen: string;
+  graphicalHintValue:string;
+  
 }
 
 const initialState: AppState = {
@@ -18,7 +21,9 @@ const initialState: AppState = {
   toggleAddQues: false,
   toggleAddHints: false,
   hintsFlush: false,
-  graphicalHint: false
+  graphicalHint: false,
+  graphicalElemLen:"",
+  graphicalHintValue:"",
 };
 
 const appCommonSlice = createSlice({
@@ -46,6 +51,12 @@ const appCommonSlice = createSlice({
     passGraphicalHintsOpen: (state, action) => {
       state.graphicalHint = action.payload;
     },
+    passGraphicalHintElemLen: (state, action) => {
+      state.graphicalElemLen = action.payload;
+    },
+    passGraphicalHintvalue: (state, action) => {
+      state.graphicalHintValue = action.payload;
+    },
   },
 });
 export const {
@@ -55,7 +66,9 @@ export const {
   toggleAddQues,
   toggleAddHints,
   hintsFlushCall,
-  passGraphicalHintsOpen
+  passGraphicalHintsOpen,
+  passGraphicalHintElemLen,
+  passGraphicalHintvalue
 } = appCommonSlice.actions;
 export const appCommonSliceRes = (state: RootState) => state.appCommonSlice;
 export default appCommonSlice.reducer;

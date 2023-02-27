@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import appCommonSlice from "../adminAppCommonStates";
+
 const store = configureStore({
     reducer:{
-        appCommonSlice
+        appCommonSlice,
     }
 });
 

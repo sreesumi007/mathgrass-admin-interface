@@ -148,32 +148,6 @@ const ToolsView = () => {
                         Add Hints
                       </a>
                     </h6>
-                    <br />
-                    {/* Toggle button  -- Start*/}
-                    <div
-                      className="form-check form-switch"
-                      style={{ marginLeft: "2rem" }}
-                    >
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="toggleSwitch"
-                        onChange={(e) => {
-                          setGraphicalHints(!graphicalHints);
-                          dispatch(passGraphicalHintsOpen(!graphicalHints));
-                          localStorage.setItem("GraphicalHint",JSON.stringify(!graphicalHints));
-                        }}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="toggleSwitch"
-                      >
-                        <h5 className="card-title text-center">
-                          Graphical Hints
-                        </h5>
-                      </label>
-                    </div>
-                    {/* Toggle button  -- Ends*/}
                   </Fragment>
                 )}
                 <HintsModal
@@ -195,6 +169,29 @@ const ToolsView = () => {
                   </div>
                 )}
               </div>
+              {/* Toggle button  -- Start*/}
+          <div
+            className="form-check form-switch"
+            style={{ marginLeft: "3rem" }}
+          >
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="toggleSwitch"
+              onChange={(e) => {
+                setGraphicalHints(!graphicalHints);
+                dispatch(passGraphicalHintsOpen(!graphicalHints));
+                localStorage.setItem(
+                  "GraphicalHint",
+                  JSON.stringify(!graphicalHints)
+                );
+              }}
+            />
+            <label className="form-check-label" htmlFor="toggleSwitch">
+              <h5 className="card-title text-center">Graphical Hints</h5>
+            </label>
+          </div>
+          {/* Toggle button  -- Ends*/}
             </div>
           )}
         </div>
