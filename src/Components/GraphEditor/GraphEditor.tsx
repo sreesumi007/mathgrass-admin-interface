@@ -15,10 +15,9 @@ import {
   toggleAddQues,
   passGraphicalHintElemLen,
   passGraphicalHintsOpen,
-  passGraphicalHintvalue
+  passGraphicalHintvalue,
 } from "../../store/adminAppCommonStates";
 import GraphicalHints from "./PopupModal/GraphicalHints";
-
 
 const GraphEditor = () => {
   const appOperations = useAppSelector(appCommonSliceRes);
@@ -42,8 +41,8 @@ const GraphEditor = () => {
 
   const [showGraphicalHintAlert, setShowGraphicalHintAlert] = useState(false);
   const [arrayElement, setArrayElement] = useState([]);
-  const [hintModalShow,setHintModalShow] = useState(false);
-  const [graphicalHintsModal,setGraphicalHintsModal]=useState("");
+  const [hintModalShow, setHintModalShow] = useState(false);
+  const [graphicalHintsModal, setGraphicalHintsModal] = useState("");
 
   const disableSaveGraphBtn = () => {
     dispatch(saveGraphBtn(false));
@@ -66,20 +65,19 @@ const GraphEditor = () => {
     setShowNameEdit(false);
   }
 
-  const addGraphicalHints = (event:any)=>{
+  const addGraphicalHints = (event: any) => {
     event.preventDefault();
-    console.log("arrray value - "+arrayElement);
-    
-    if(arrayElement.length>0){
+    console.log("arrray value - " + arrayElement);
+
+    if (arrayElement.length > 0) {
       setHintModalShow(true);
-      localStorage.setItem("ElementId",JSON.stringify(arrayElement));
+      localStorage.setItem("ElementId", JSON.stringify(arrayElement));
       dispatch(passGraphicalHintElemLen(arrayElement.length));
       setShowGraphicalHintAlert(false);
-    }
-    else{
+    } else {
       setShowGraphicalHintAlert(true);
     }
-}
+  };
 
   // Clear LocalStorage on reload - Starts
   useEffect(() => {
@@ -163,39 +161,28 @@ const GraphEditor = () => {
       const isGraphicalHint = localStorage.getItem("GraphicalHint");
       const index = arrOfIdBlue.indexOf(element.model.attributes.id);
       if (isGraphicalHint === "true") {
-        if (element.model.attributes.attrs.body.stroke === "black") {
+        if (
+          element.model.attributes.attrs.body.stroke === "black" ||
+          element.model.attributes.attrs.body.stroke === "#ff8800"
+        ) {
           element.model.attr("body/stroke", "blue");
           if (index === -1) {
             arrOfIdBlue.push(element.model.attributes.id);
-          } else{
+          } else {
             arrOfIdBlue.splice(index, 1);
           }
-        } 
-        else{
-          if(element.model.attributes.attrs.body.stroke === "blue"){
+        } else {
+          if (element.model.attributes.attrs.body.stroke === "blue") {
             arrOfIdBlue.splice(index, 1);
           }
           element.model.attr("body/stroke", "black");
-      }
-      setArrayElement(arrOfIdBlue);
+        }
+        setArrayElement(arrOfIdBlue);
       }
     });
     paper.on("link:pointerclick", (link: any) => {
       console.log("clicked in the link id - ", link.model.attributes.id);
       console.log("clicked in the link name - ", link.model.attributes.type);
-    });
-    $("#" + iden.getIdForGraphicalHint).click(() => {
-      paper.model.getElements().forEach(function (element) {
-        // Check if the element's body stroke is blue
-        if (element.attr("body/stroke") === "blue") {
-          // If it is, log the element's id to the console
-          console.log(
-            "Element with id " + element.id + " has a blue body stroke."
-          );
-          arrOfIdBlue.push(element.id);
-        }
-      });
-      console.log("Elements selected - ", arrOfIdBlue);
     });
 
     // paper.on("link:pointerdblclick", (linkView) => {
@@ -249,7 +236,9 @@ const GraphEditor = () => {
         localStorage.getItem("QuestionModal") || "[]"
       );
       let hintsModal = JSON.parse(localStorage.getItem("HintsModal") || "[]");
-      let graphicalHintsModal = JSON.parse(localStorage.getItem("GraphicalHints") || "[]");
+      let graphicalHintsModal = JSON.parse(
+        localStorage.getItem("GraphicalHints") || "[]"
+      );
       setJsonCall(true);
       setJsonState(json);
       setQuesModal(JSON.stringify(questionModal));
@@ -405,19 +394,35 @@ const GraphEditor = () => {
                     Click the elememt or link
                     <br />
                     <br />
-                    {appOperations.graphicalHintValue === "" &&<a href="#" onClick={addGraphicalHints}>Add Hint</a>}
+                    {appOperations.graphicalHintValue === "" && (
+                      <a href="#" onClick={addGraphicalHints}>
+                        Add Hint
+                      </a>
+                    )}
                     <br />
-                    {showGraphicalHintAlert===true &&<p className="text-danger"><i>Please click any element or link</i></p>}
+                    {showGraphicalHintAlert === true && (
+                      <p className="text-danger">
+                        <i>Please click any element or link</i>
+                      </p>
+                    )}
                   </h6>
-                  {appOperations.graphicalHintValue !== "" && <div className="card-header bg-info text-white rounded">
-                  Graphical Hints Added
-                  <a
-                    href="#"
-                    className="fa fa-trash-o"
-                    onClick={()=>{dispatch(passGraphicalHintvalue(""))}}
-                    style={{ float: "right", fontSize: "28px", color: "red" }}
-                  ></a>
-                </div>}
+                  {appOperations.graphicalHintValue !== "" && (
+                    <div className="card-header bg-info text-white rounded">
+                      Graphical Hints Added
+                      <a
+                        href="#"
+                        className="fa fa-trash-o"
+                        onClick={() => {
+                          dispatch(passGraphicalHintvalue(""));
+                        }}
+                        style={{
+                          float: "right",
+                          fontSize: "28px",
+                          color: "red",
+                        }}
+                      ></a>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -427,9 +432,6 @@ const GraphEditor = () => {
                 setHintModalShow(false);
               }}
             />
-            {/* <button className="btn btn-secondary" id="getIdForGraphicalHint">
-              Check
-            </button> */}
             {jsonCall && (
               <div className="card" style={{ width: "18rem" }}>
                 <div className="card-body">

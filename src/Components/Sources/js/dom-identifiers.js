@@ -19,6 +19,6 @@ export const serializeConsoleButton = "serializeConsoleButton";
 export const deserializationTextarea = "deserializationTextarea";
 export const deserializeButton = "deserializeButton";
 
-export const getIdForGraphicalHint = "getIdForGraphicalHint";
+
 
 
