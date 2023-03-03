@@ -89,6 +89,8 @@ const GraphEditor = () => {
   }, []);
   // Clear LocalStorage on reload - Ends
 
+  
+
   useEffect(() => {
     const graph = new joint.dia.Graph({}, { cellNamespace: joint.shapes });
     const paper = new joint.dia.Paper({
@@ -133,6 +135,10 @@ const GraphEditor = () => {
     paper.on({
       "element:contextmenu": onElementRightClick,
     });
+    function onElementRightClick(view: any) {
+      linkCreationMode = "start";
+      sourceCell = func.linkCreationStart(view, linkCreationMode, sourceCell);
+    }
     paper.on(
       "cell:pointerclick",
       function (cellView: any, evt: any, x: any, y: any) {
@@ -156,7 +162,6 @@ const GraphEditor = () => {
       }
       getNameForNode(elementView);
     });
-
     paper.on("element:pointerclick", (element: any) => {
       const isGraphicalHint = localStorage.getItem("GraphicalHint");
       const index = arrOfIdBlue.indexOf(element.model.attributes.id);
@@ -180,12 +185,109 @@ const GraphEditor = () => {
         setArrayElement(arrOfIdBlue);
       }
     });
-    paper.on("link:pointerclick", (link: any) => {
-      console.log("clicked in the link id - ", link.model.attributes.id);
-      console.log("clicked in the link name - ", link.model.attributes.type);
+    
+  // Check for the directed to undirected links - starts
+    $("#" + iden.graphChange).click(() => {
+      console.log("graph change called - ");
+      let linkDirection:any = localStorage.getItem("LinkDirection");
+      if(linkDirection ==="true"){
+        convertLinksToDirected();
+      }
+      else{
+        convertLinksToUndirected();
+      }
+    });
+    function convertLinksToUndirected() {
+      console.log("came into convertLinksToUndirected")
+      graph.getLinks().forEach(link => {
+        link.attr({
+        line: {
+          width: 1,
+          targetMarker: {
+            type: "circle",
+            size: 5,
+            attrs: {
+              fill: "black",
+            },
+          },
+        },
+      });
+      link.label(0, {
+        attrs: {
+          text: {
+            text: "Undirected",
+          },
+        },
+      });
+      });
+    }
+    function convertLinksToDirected() {
+      console.log("came into convertLinksToDirected")
+      graph.getLinks().forEach(link => {
+        link.attr({
+        line: {
+          width: 1,
+          targetMarker: {
+            type: "path",
+            attrs: {
+              fill: "black",
+            },
+          },
+        },
+      });
+      link.label(0, {
+              attrs: {
+                text: {
+                  text: "Directed",
+                },
+              },
+            });
+      });
+    }
+    // Check for the directed to undirected links - Ends
+    // Extra code for Deleting the Links - Starts
+    paper.on("link:pointerdblclick", (linkView: any) => {
+      let link = linkView.model;
+       console.log("the cid of the thing is like - ", link);
+       link.remove();
+     });
+     // Extra code for Deleting the Links - Ends
+
+     $("#" + iden.SaveGraph).click(() => {
+      let json = JSON.stringify(graph.toJSON());
+      let questionModal = JSON.parse(
+        localStorage.getItem("QuestionModal") || "[]"
+      );
+      let hintsModal = JSON.parse(localStorage.getItem("HintsModal") || "[]");
+      let graphicalHintsModal = JSON.parse(
+        localStorage.getItem("GraphicalHints") || "[]"
+      );
+      setJsonCall(true);
+      setJsonState(json);
+      setQuesModal(JSON.stringify(questionModal));
+      setHintsModal(JSON.stringify(hintsModal));
+      setGraphicalHintsModal(JSON.stringify(graphicalHintsModal));
+      setShowNameEdit(false);
+      dispatch(saveGraphBtn(false));
+      dispatch(passGraphicalHintsOpen(false));
+      dispatch(toggleAddQues(false));
+      dispatch(toggleAddHints(false));
+      graph.clear();
+      // localStorage.clear();
     });
 
-    // paper.on("link:pointerdblclick", (linkView) => {
+    $("#" + iden.ClearGraph).click(() => {
+      setJsonCall(false);
+      func.onClearGraphCall();
+      disableSaveGraphBtn();
+      setShowNameEdit(false);
+      dispatch(toggleAddQues(false));
+      dispatch(toggleAddHints(false));
+      dispatch(passGraphicalHintsOpen(false));
+      localStorage.clear();
+      graph.clear();
+    });
+// paper.on("link:pointerdblclick", (linkView) => {
     //   // setLinkClick(elementView.model.isElement());
     //   console.log("Came into the link doubleClick block");
     //   const currentLink = linkView.model;
@@ -221,54 +323,36 @@ const GraphEditor = () => {
     // });
     // Change for link click -- Ends
 
-    // Extra code for Deleting the Links - Starts
-    paper.on("link:pointerdblclick", (linkView: any) => {
-      console.log("SRK Click called by the element");
-      let link = linkView.model;
-      console.log("the cid of the thing is like - ", link);
-      link.remove();
-    });
-    // Extra code for Deleting the Links - Ends
-
-    $("#" + iden.SaveGraph).click(() => {
-      let json = JSON.stringify(graph.toJSON());
-      let questionModal = JSON.parse(
-        localStorage.getItem("QuestionModal") || "[]"
-      );
-      let hintsModal = JSON.parse(localStorage.getItem("HintsModal") || "[]");
-      let graphicalHintsModal = JSON.parse(
-        localStorage.getItem("GraphicalHints") || "[]"
-      );
-      setJsonCall(true);
-      setJsonState(json);
-      setQuesModal(JSON.stringify(questionModal));
-      setHintsModal(JSON.stringify(hintsModal));
-      setGraphicalHintsModal(JSON.stringify(graphicalHintsModal));
-      setShowNameEdit(false);
-      dispatch(saveGraphBtn(false));
-      dispatch(passGraphicalHintsOpen(false));
-      dispatch(toggleAddQues(false));
-      dispatch(toggleAddHints(false));
-      graph.clear();
-      // localStorage.clear();
-    });
-
-    $("#" + iden.ClearGraph).click(() => {
-      setJsonCall(false);
-      func.onClearGraphCall();
-      disableSaveGraphBtn();
-      setShowNameEdit(false);
-      dispatch(toggleAddQues(false));
-      dispatch(toggleAddHints(false));
-      dispatch(passGraphicalHintsOpen(false));
-      localStorage.clear();
-      graph.clear();
-    });
-
-    function onElementRightClick(view: any) {
-      linkCreationMode = "start";
-      sourceCell = func.linkCreationStart(view, linkCreationMode, sourceCell);
-    }
+    
+    // paper.on("link:pointerdblclick", (cellView) => {
+    //   console.log("came into link change block");
+    //   graph.getLinks()
+    //   // Undirected Graph
+    //   // cellView.model.attr({
+    //   //   line: {
+    //   //     width: 1,
+    //   //     targetMarker: {
+    //   //       type: "circle",
+    //   //       size: 5,
+    //   //       attrs: {
+    //   //         fill: "black",
+    //   //       },
+    //   //     },
+    //   //   },
+    //   // });
+    //   // DirectedGraph
+    //   // cellView.model.attr({
+    //   //   line: {
+    //   //     width: 1,
+    //   //     targetMarker: {
+    //   //       type: "path",
+    //   //       attrs: {
+    //   //         fill: "black",
+    //   //       },
+    //   //     },
+    //   //   },
+    //   // });
+    // });
     // If anything not working please uncomment this and comment on the paper mentioned - starts
     // const scroller = new ui.PaperScroller({
     //   paper: paper,
@@ -287,6 +371,12 @@ const GraphEditor = () => {
     // If anything not working please uncomment this and comment on the paper mentioned - Ends
   }, []);
 
+  useEffect(()=>{
+    $("#" + iden.graphChange).click();
+    console.log("button triggered")
+
+  },[appOperations.linkDirection]);
+  
   return (
     <Fragment>
       <div className="container-fluid">
@@ -304,8 +394,7 @@ const GraphEditor = () => {
             <header className="d-block p-2 bg-secondary text-white text-center rounded blockquote">
               GRAPH
             </header>
-
-            <button
+          <button
               id="saveGraphJson"
               className="btn btn-outline-success"
               style={{
@@ -319,6 +408,7 @@ const GraphEditor = () => {
             >
               Save Graph
             </button>
+            <button id="graphChange"style={{display: "none"}} />
             <button
               id="clearGraphView"
               className="btn btn-outline-danger"
