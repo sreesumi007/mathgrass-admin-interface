@@ -105,7 +105,7 @@ const ToolsView = () => {
         <div>
           <div className="card" style={{ width: "18rem" }}>
             <div className="card-body">
-              <h5 className="card-title text-center">Questions</h5>
+              <h5 className="card-title text-center">QUESTIONS</h5>
               {!appOperations.toggleAddQues && (
                 <h6 className="card-subtitle mb-2 text-muted text-center">
                   <a href="#" onClick={() => setQuesModalShow(true)}>
@@ -134,9 +134,41 @@ const ToolsView = () => {
           {appOperations.toggleAddQues && (
             <div className="card" style={{ width: "18rem" }}>
               <div className="card-body">
-                <h5 className="card-title text-center">Hints</h5>
+                <h5 className="card-title text-center">HINTS</h5>
+                {/* Toggle button for Graphical Hints  -- Start*/}
                 {!appOperations.toggleAddHints && (
                   <Fragment>
+                    <div
+                      className="form-check form-switch"
+                      style={{ marginLeft: "3rem" }}
+                    >
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="toggleSwitch"
+                        onChange={(e) => {
+                          setGraphicalHints(!graphicalHints);
+                          dispatch(passGraphicalHintsOpen(!graphicalHints));
+                          localStorage.setItem(
+                            "GraphicalHint",
+                            JSON.stringify(!graphicalHints)
+                          );
+                        }}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="toggleSwitch"
+                      >
+                        <h6 className="card-title text-center">
+                          Graphical Hints
+                        </h6>
+                      </label>
+                    </div>
+                    {/* Toggle button for Graphical Hints   -- Ends*/}
+                    <br />
+                    <h6 className="card-title text-center">
+                      Textual and Script Hints
+                    </h6>
                     <h6 className="card-subtitle mb-2 text-muted text-center">
                       <a
                         href="#"
@@ -169,29 +201,6 @@ const ToolsView = () => {
                   </div>
                 )}
               </div>
-              {/* Toggle button  -- Start*/}
-          <div
-            className="form-check form-switch"
-            style={{ marginLeft: "3rem" }}
-          >
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="toggleSwitch"
-              onChange={(e) => {
-                setGraphicalHints(!graphicalHints);
-                dispatch(passGraphicalHintsOpen(!graphicalHints));
-                localStorage.setItem(
-                  "GraphicalHint",
-                  JSON.stringify(!graphicalHints)
-                );
-              }}
-            />
-            <label className="form-check-label" htmlFor="toggleSwitch">
-              <h5 className="card-title text-center">Graphical Hints</h5>
-            </label>
-          </div>
-          {/* Toggle button  -- Ends*/}
             </div>
           )}
         </div>

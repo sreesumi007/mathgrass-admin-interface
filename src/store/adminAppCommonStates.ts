@@ -11,6 +11,8 @@ export interface AppState {
   graphicalHint: boolean;
   graphicalElemLen: string;
   graphicalHintValue:string;
+  scriptHintValue:string;
+  openOrderHintsModal:boolean;
   
 }
 
@@ -22,8 +24,10 @@ const initialState: AppState = {
   toggleAddHints: false,
   hintsFlush: false,
   graphicalHint: false,
+  openOrderHintsModal:false,
   graphicalElemLen:"",
   graphicalHintValue:"",
+  scriptHintValue:"",
 };
 
 const appCommonSlice = createSlice({
@@ -57,6 +61,12 @@ const appCommonSlice = createSlice({
     passGraphicalHintvalue: (state, action) => {
       state.graphicalHintValue = action.payload;
     },
+    passScriptHintvalue: (state, action) => {
+      state.scriptHintValue = action.payload;
+    },
+    passOrderHintsOpen: (state, action) => {
+      state.openOrderHintsModal = action.payload;
+    },
   },
 });
 export const {
@@ -68,7 +78,9 @@ export const {
   hintsFlushCall,
   passGraphicalHintsOpen,
   passGraphicalHintElemLen,
-  passGraphicalHintvalue
+  passGraphicalHintvalue,
+  passScriptHintvalue,
+  passOrderHintsOpen
 } = appCommonSlice.actions;
 export const appCommonSliceRes = (state: RootState) => state.appCommonSlice;
 export default appCommonSlice.reducer;
