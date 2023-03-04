@@ -2,24 +2,26 @@ import { Fragment, useState } from "react";
 
 import { saveQuesModal } from "../../../store/adminAppCommonStates";
 import { useAppDispatch } from "../../../store/config/hooks";
+import { setFinalAnswer, setOptions } from "../../../store/slices/quesMultipleChoiceSlice";
 
 const MultipleChoice = () => {
   const dispatch = useAppDispatch();
   const multipleChoiceArr: any = [];
+  const choiceOption : (string | null)[]=[];
   const [inputOptions, setInputOptions] = useState({
     optionA: "",
     optionB: "",
     optionC: "",
     optionD: "",
   });
+
   const [openRadioAnswer, setOpenRadioAnswer] = useState(false);
-  // const [checkBlankInput, setCheckBlankInput] = useState(true);
   const [showBlankAlert, setShowBlankAlert] = useState(false);
   const [openInputOption, setOpenInputOption] = useState("1");
   const [showHideAdd, setShowHideAdd] = useState("1");
 
   const inputChangeHandle = (event: any) => {
-    const value = event.target.value;
+    const value:any = event.target.value;
     setInputOptions({
       ...inputOptions,
       [event.target.name]: value,
@@ -43,7 +45,6 @@ const MultipleChoice = () => {
     dispatch(saveQuesModal(false));
   };
   const correctAnswerHandler = (event: any) => {
-    // event.preventDefault();
     let corrAnswer = event.target.value;
     multipleChoiceArr.push({
       optionA: inputOptions.optionA,
@@ -52,7 +53,13 @@ const MultipleChoice = () => {
       optionD: inputOptions.optionD,
       finalAnswer: corrAnswer,
     });
-    localStorage.setItem("MultipleChoice", JSON.stringify(multipleChoiceArr));
+    // Change for REdux call - starts
+    choiceOption.push(inputOptions.optionA,inputOptions.optionB,inputOptions.optionC,inputOptions.optionD);
+    const filteredChoice: (string | null)[] =choiceOption.filter(choice=>choice!="");
+    dispatch(setOptions(filteredChoice));
+    dispatch(setFinalAnswer(corrAnswer));
+    console.log("Check the options Values from mapped array - ",filteredChoice);
+    // Change for REdux call - Ends
     dispatch(saveQuesModal(true));
   };
 

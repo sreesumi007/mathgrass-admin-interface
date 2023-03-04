@@ -7,10 +7,13 @@ import MultipleChoice from "./MultipleChoice";
 
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
 import { appCommonSliceRes, saveQuesModal, toggleAddQues } from "../../../store/adminAppCommonStates";
+import { multipleChoiceOptionAns } from "../../../store/slices/quesMultipleChoiceSlice";
+
 
 function QuestionModal(props: any) {
   const dispatch = useAppDispatch();
   const appOperations = useAppSelector(appCommonSliceRes);
+  const optionsAnswer = useAppSelector(multipleChoiceOptionAns);
   const inputQues: any = useRef("");
   const inputAnswer: any = useRef("");
   const inputScript: any = useRef("");
@@ -66,14 +69,12 @@ function QuestionModal(props: any) {
 
   const saveModal = (event: any) => {
     event.preventDefault();
-    let checkLocal = JSON.parse(localStorage.getItem("MultipleChoice") || "[]");
     if (radioClick === "MultipleChoice") {
       questionModalArr.push({
         Question: showQues,
         AnswerType: radioClick,
-        OptionsAndAnswer: checkLocal,
+        OptionsAndAnswer: optionsAnswer,
       });
-      localStorage.removeItem("MultipleChoice");
       localStorage.setItem("QuestionModal", JSON.stringify(questionModalArr));
       dispatch(toggleAddQues(true));
       props.onHide();
