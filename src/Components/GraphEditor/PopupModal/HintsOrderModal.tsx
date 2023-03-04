@@ -35,7 +35,7 @@ const HintsOrderModal = (props: any) => {
         </Modal.Header>
         <Modal.Body>
           <h5 className="text-muted text-center">
-            <i> Please enter the hints order</i>
+            <i> Provide hints order in Number (1,2,3...n)</i>
           </h5>
           <div className="card-deck">
             {appOperations.scriptHintValue !== "" && (
@@ -50,8 +50,9 @@ const HintsOrderModal = (props: any) => {
                     </span>
                   </div>
                   <input
-                    type="text"
+                    type="number"
                     style={{ maxWidth: "100px" }}
+                    placeholder="Your Order"
                     className="form-control form-control-sm"
                   />
                 </div>
@@ -70,8 +71,9 @@ const HintsOrderModal = (props: any) => {
                     </span>
                   </div>
                   <input
-                    type="text"
+                    type="number"
                     style={{ maxWidth: "100px" }}
+                    placeholder="Your Order"
                     className="form-control form-control-sm"
                   />
                 </div>
@@ -92,7 +94,7 @@ const HintsOrderModal = (props: any) => {
                         </span>
                       </div>
                       <input
-                        type="text"
+                        type="number"
                         style={{ maxWidth: "100px" }}
                         className="form-control form-control-sm"
                         placeholder="Your Order"
