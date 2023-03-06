@@ -146,6 +146,8 @@ const ToolsView = () => {
                         className="form-check-input"
                         type="checkbox"
                         id="toggleSwitch"
+                        checked={appOperations.graphicalHint}
+                        disabled={appOperations.graphicalHint===true}
                         onChange={(e) => {
                           setGraphicalHints(!graphicalHints);
                           dispatch(passGraphicalHintsOpen(!graphicalHints));

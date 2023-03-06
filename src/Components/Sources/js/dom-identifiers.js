@@ -20,6 +20,7 @@ export const deserializationTextarea = "deserializationTextarea";
 export const deserializeButton = "deserializeButton";
 
 export const graphChange = "graphChange";
+export const closeGraphicalHint = "closeGraphicalHint";
 
 
 

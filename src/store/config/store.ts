@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import appCommonSlice from "../adminAppCommonStates";
+import hintsWithOrderSlice from "../slices/hintsWithOrderSlice";
 import quesMultipleChoiceSlice from "../slices/quesMultipleChoiceSlice";
 import textHintSlice from "../slices/textHintSlice";
 
@@ -7,7 +8,8 @@ const store = configureStore({
     reducer:{
         appCommonSlice,
         textHintSlice,
-        quesMultipleChoiceSlice
+        quesMultipleChoiceSlice,
+        hintsWithOrderSlice
     }
 });
 

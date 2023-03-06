@@ -4,21 +4,79 @@ import { appCommonSliceRes } from "../../../store/adminAppCommonStates";
 import { textHintSliceArray } from "../../../store/slices/textHintSlice";
 
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
+import {
+  addScriptHintsWithOrder,
+  addTextHintsWithOrder,
+  clearArray,
+  textHintsWithOrder,
+} from "../../../store/slices/hintsWithOrderSlice";
 
 type InputValues = { [key: string]: string };
 
 const HintsOrderModal = (props: any) => {
   const appOperations = useAppSelector(appCommonSliceRes);
   const textHintsArr = useAppSelector(textHintSliceArray);
+  const hintsWithOrder = useAppSelector(textHintsWithOrder);
   const dispatch = useAppDispatch();
+
   const [inputValues, setInputValues] = useState<InputValues>({});
+  const [scriptHintOrder, setScriptHintOrder] = useState(0);
+  const [graphicalHintOrder, setGraphicalHintOrder] = useState(0);
+
   const handleInputChange = (event: any) => {
     const { id, value } = event.target;
     setInputValues((prevState: any) => ({
       ...prevState,
       [id]: value,
     }));
-    console.log("Values from save - ", inputValues);
+  };
+
+  const saveOrderOfHints = (event: any) => {
+    event.preventDefault();
+    console.log("Saved Successfully");
+    if (textHintsArr.textHintValue.length !== 0) {
+      for (let i = 0; i < textHintsArr.textHintValue.length; i++) {
+        if (inputValues[`input-${i}`] === undefined) {
+          dispatch(
+            addTextHintsWithOrder({
+              hint: textHintsArr.textHintValue[i],
+              order: 0,
+            })
+          );
+        } else {
+          dispatch(
+            addTextHintsWithOrder({
+              hint: textHintsArr.textHintValue[i],
+              order: Number(inputValues[`input-${i}`]),
+            })
+          );
+        }
+      }
+      console.log("Text hints with order - ", inputValues);
+    }
+    if (appOperations.scriptHintValue !== "") {
+      dispatch(
+        addScriptHintsWithOrder({
+          hint: appOperations.scriptHintValue,
+          order: scriptHintOrder,
+        })
+      );
+    }
+    if (appOperations.graphicalHintValue !== "") {
+      dispatch(
+        addScriptHintsWithOrder({
+          hint: appOperations.graphicalHintValue,
+          order: graphicalHintOrder,
+        })
+      );
+    }
+    props.onHide();
+  };
+
+  const clickClose = (event: any) => {
+    event.preventDefault();
+    dispatch(clearArray());
+    props.onHide();
   };
   return (
     <Fragment>
@@ -28,7 +86,7 @@ const HintsOrderModal = (props: any) => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton>
+        <Modal.Header >
           <Modal.Title id="contained-modal-title-vcenter">
             HINTS ORDER
           </Modal.Title>
@@ -54,6 +112,9 @@ const HintsOrderModal = (props: any) => {
                     style={{ maxWidth: "100px" }}
                     placeholder="Your Order"
                     className="form-control form-control-sm"
+                    onChange={(e: any) => {
+                      setScriptHintOrder(Number(e.target.value));
+                    }}
                   />
                 </div>
               </>
@@ -75,6 +136,9 @@ const HintsOrderModal = (props: any) => {
                     style={{ maxWidth: "100px" }}
                     placeholder="Your Order"
                     className="form-control form-control-sm"
+                    onChange={(e: any) => {
+                      setGraphicalHintOrder(Number(e.target.value));
+                    }}
                   />
                 </div>
               </>
@@ -111,8 +175,13 @@ const HintsOrderModal = (props: any) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-outline-primary">Save</button>
-          <button className="btn btn-outline-primary" onClick={props.onHide}>
+          <button
+            className="btn btn-outline-primary"
+            onClick={saveOrderOfHints}
+          >
+            Save
+          </button>
+          <button className="btn btn-outline-primary" onClick={clickClose}>
             Close
           </button>
         </Modal.Footer>

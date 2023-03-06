@@ -26,7 +26,7 @@ const GraphEditor = () => {
     "LinkDirection",
     JSON.stringify(appOperations.linkDirection)
   );
-  const arrOfIdBlue: any = [];
+  let arrOfIdBlue: any = [];
 
   const nameInputRef: any = useRef("");
   let nameAlreadyExists: boolean;
@@ -284,7 +284,19 @@ const GraphEditor = () => {
       localStorage.clear();
       graph.clear();
     });
-    // paper.on("link:pointerdblclick", (linkView) => {
+
+    $("#" + iden.closeGraphicalHint).click(()=>{
+      graph.getElements().forEach((elem)=>{
+        elem.attr({
+            body:{
+              stroke:"black"
+            }
+        })
+       })
+       setArrayElement([]);
+       arrOfIdBlue=[];
+    });
+// paper.on("link:pointerdblclick", (linkView) => {
     //   // setLinkClick(elementView.model.isElement());
     //   console.log("Came into the link doubleClick block");
     //   const currentLink = linkView.model;
@@ -372,6 +384,11 @@ const GraphEditor = () => {
     console.log("button triggered");
   }, [appOperations.linkDirection]);
 
+  useEffect(() => {
+    $("#" + iden.closeGraphicalHint).click();
+    console.log("button triggered");
+  }, [appOperations.graphicalHint!==true]);
+
   return (
     <Fragment>
       <div className="container-fluid">
@@ -404,6 +421,7 @@ const GraphEditor = () => {
               Save Graph
             </button>
             <button id="graphChange" style={{ display: "none" }} />
+            <button id="closeGraphicalHint" style={{ display: "none" }} />
             <button
               id="clearGraphView"
               className="btn btn-outline-danger"
@@ -480,15 +498,25 @@ const GraphEditor = () => {
                     <br />
                     <br />
                     {appOperations.graphicalHintValue === "" && (
+                      <>
                       <a href="#" onClick={addGraphicalHints}>
                         Add Hint
                       </a>
-                    )}
-                    <br />
+                      <br />
                     {showGraphicalHintAlert === true && (
                       <p className="text-danger">
                         <i>Please click any element or link</i>
                       </p>
+                    )}
+                    <button
+                      type="button"
+                      className="btn btn-outline-info mb-2"
+                      style={{ float: "right" }}
+                      onClick={()=>{dispatch(passGraphicalHintsOpen(false))}}
+                    >
+                      Close
+                    </button>
+                    </>
                     )}
                   </h6>
                   {appOperations.graphicalHintValue !== "" && (
