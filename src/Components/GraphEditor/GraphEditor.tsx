@@ -16,11 +16,13 @@ import {
   passGraphicalHintElemLen,
   passGraphicalHintsOpen,
   passGraphicalHintvalue,
-} from "../../store/adminAppCommonStates";
+} from "../../store/adminAppCommonOperations";
 import GraphicalHints from "./PopupModal/GraphicalHints";
+import { adminAppJSON } from "../../store/adminAppJSONFormation";
 
 const GraphEditor = () => {
   const appOperations = useAppSelector(appCommonSliceRes);
+  const appJson = useAppSelector(adminAppJSON);
   const dispatch = useAppDispatch();
   localStorage.setItem(
     "LinkDirection",
@@ -88,6 +90,11 @@ const GraphEditor = () => {
     };
   }, []);
   // Clear LocalStorage on reload - Ends
+  const checkJsonCalled = (event: any) => {
+    event.preventDefault();
+    $("#" + iden.SaveGraph).click();
+    console.log("JSOn button triggered -", appJson);
+  };
 
   useEffect(() => {
     const graph = new joint.dia.Graph({}, { cellNamespace: joint.shapes });
@@ -252,6 +259,7 @@ const GraphEditor = () => {
 
     $("#" + iden.SaveGraph).click(() => {
       let json = JSON.stringify(graph.toJSON());
+
       let questionModal = JSON.parse(
         localStorage.getItem("QuestionModal") || "[]"
       );
@@ -285,18 +293,18 @@ const GraphEditor = () => {
       graph.clear();
     });
 
-    $("#" + iden.closeGraphicalHint).click(()=>{
-      graph.getElements().forEach((elem)=>{
+    $("#" + iden.closeGraphicalHint).click(() => {
+      graph.getElements().forEach((elem) => {
         elem.attr({
-            body:{
-              stroke:"black"
-            }
-        })
-       })
-       setArrayElement([]);
-       arrOfIdBlue=[];
+          body: {
+            stroke: "black",
+          },
+        });
+      });
+      setArrayElement([]);
+      arrOfIdBlue = [];
     });
-// paper.on("link:pointerdblclick", (linkView) => {
+    // paper.on("link:pointerdblclick", (linkView) => {
     //   // setLinkClick(elementView.model.isElement());
     //   console.log("Came into the link doubleClick block");
     //   const currentLink = linkView.model;
@@ -377,6 +385,7 @@ const GraphEditor = () => {
     //   paper.remove();
     // };
     // If anything not working please uncomment this and comment on the paper mentioned - Ends
+    return () => console.log("Component unmounted");
   }, []);
 
   useEffect(() => {
@@ -387,7 +396,7 @@ const GraphEditor = () => {
   useEffect(() => {
     $("#" + iden.closeGraphicalHint).click();
     console.log("button triggered");
-  }, [appOperations.graphicalHint!==true]);
+  }, [appOperations.graphicalHint !== true]);
 
   return (
     <Fragment>
@@ -407,35 +416,38 @@ const GraphEditor = () => {
               GRAPH
             </header>
             <button
-              id="saveGraphJson"
-              className="btn btn-outline-success"
+              type="button"
+              className="btn btn-success btn-rounded"
               style={{
                 marginRight: "5px",
                 float: "right",
                 position: "absolute",
                 right: "320px",
-                bottom: "35px",
+                bottom: "50px",
               }}
+              onClick={checkJsonCalled}
               disabled={!appOperations.saveGraphToggle}
             >
               Save Graph
             </button>
             <button id="graphChange" style={{ display: "none" }} />
             <button id="closeGraphicalHint" style={{ display: "none" }} />
+            <button id="saveGraphJson" style={{ display: "none" }} />
             <button
               id="clearGraphView"
-              className="btn btn-outline-danger"
+              className="btn btn-danger btn-rounded"
               style={{
                 marginRight: "5px",
                 float: "right",
                 position: "absolute",
                 right: "430px",
-                bottom: "35px",
+                bottom: "50px",
               }}
               disabled={!appOperations.saveGraphToggle}
             >
               Clear Graph
             </button>
+
             <div
               className="canvas"
               id="diagramCanvas"
@@ -499,24 +511,26 @@ const GraphEditor = () => {
                     <br />
                     {appOperations.graphicalHintValue === "" && (
                       <>
-                      <a href="#" onClick={addGraphicalHints}>
-                        Add Hint
-                      </a>
-                      <br />
-                    {showGraphicalHintAlert === true && (
-                      <p className="text-danger">
-                        <i>Please click any element or link</i>
-                      </p>
-                    )}
-                    <button
-                      type="button"
-                      className="btn btn-outline-info mb-2"
-                      style={{ float: "right" }}
-                      onClick={()=>{dispatch(passGraphicalHintsOpen(false))}}
-                    >
-                      Close
-                    </button>
-                    </>
+                        <a href="#" onClick={addGraphicalHints}>
+                          Add Hint
+                        </a>
+                        <br />
+                        {showGraphicalHintAlert === true && (
+                          <p className="text-danger">
+                            <i>Please click any element or link</i>
+                          </p>
+                        )}
+                        <button
+                          type="button"
+                          className="btn btn-outline-info mb-2"
+                          style={{ float: "right" }}
+                          onClick={() => {
+                            dispatch(passGraphicalHintsOpen(false));
+                          }}
+                        >
+                          Close
+                        </button>
+                      </>
                     )}
                   </h6>
                   {appOperations.graphicalHintValue !== "" && (

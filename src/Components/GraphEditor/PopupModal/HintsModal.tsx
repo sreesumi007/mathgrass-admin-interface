@@ -6,14 +6,17 @@ import {
   passOrderHintsOpen,
   passScriptHintvalue,
   toggleAddHints,
-} from "../../../store/adminAppCommonStates";
+} from "../../../store/adminAppCommonOperations";
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
 import HintsOrderModal from "./HintsOrderModal";
 import { setTextHintArray } from "../../../store/slices/textHintSlice";
+import { adminAppJSON } from "../../../store/adminAppJSONFormation";
 
 const HintsModal = (props: any) => {
   const dispatch = useAppDispatch();
   const appOperatins = useAppSelector(appCommonSliceRes);
+  const appJson = useAppSelector(adminAppJSON);
+  console.log("check question modal -",appJson);
 
   const hintsModalArr: any = [];
   const textHintsArr: any = [];
@@ -33,6 +36,7 @@ const HintsModal = (props: any) => {
     setCheckScriptHint(false);
     setCounterAdd(0);
     setInputFields([{ value: "" }]);
+    
   }, [appOperatins.hintsFlush]);
 
   // Check click outside - Ends

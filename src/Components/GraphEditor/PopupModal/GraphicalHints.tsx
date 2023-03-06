@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import {appCommonSliceRes,passGraphicalHintvalue} from "../../../store/adminAppCommonStates";
+import {appCommonSliceRes,passGraphicalHintvalue} from "../../../store/adminAppCommonOperations";
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
 
 const GraphicalHints = (props: any) => {

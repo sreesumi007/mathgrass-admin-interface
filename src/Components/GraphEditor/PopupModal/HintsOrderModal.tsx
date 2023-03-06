@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { appCommonSliceRes } from "../../../store/adminAppCommonStates";
+import { appCommonSliceRes } from "../../../store/adminAppCommonOperations";
 import { textHintSliceArray } from "../../../store/slices/textHintSlice";
 
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
@@ -16,7 +16,7 @@ type InputValues = { [key: string]: string };
 const HintsOrderModal = (props: any) => {
   const appOperations = useAppSelector(appCommonSliceRes);
   const textHintsArr = useAppSelector(textHintSliceArray);
-  const hintsWithOrder = useAppSelector(textHintsWithOrder);
+  // const hintsWithOrder = useAppSelector(textHintsWithOrder);
   const dispatch = useAppDispatch();
 
   const [inputValues, setInputValues] = useState<InputValues>({});

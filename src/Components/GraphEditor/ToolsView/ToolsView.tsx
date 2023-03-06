@@ -11,8 +11,8 @@ import {
   toggleAddHints,
   toggleAddQues,
   toggleLinkDirection,
-} from "../../../store/adminAppCommonStates";
-import { saveGraphBtn } from "../../../store/adminAppCommonStates";
+} from "../../../store/adminAppCommonOperations";
+import { saveGraphBtn } from "../../../store/adminAppCommonOperations";
 
 import QuestionModal from "../PopupModal/QuestionModal";
 import HintsModal from "../PopupModal/HintsModal";

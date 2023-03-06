@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 
-import { saveQuesModal } from "../../../store/adminAppCommonStates";
+import { saveQuesModal } from "../../../store/adminAppCommonOperations";
 import { useAppDispatch } from "../../../store/config/hooks";
 import { setFinalAnswer, setOptions } from "../../../store/slices/quesMultipleChoiceSlice";
 

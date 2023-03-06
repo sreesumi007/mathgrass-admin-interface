@@ -4,11 +4,21 @@ import { useRef, useState } from "react";
 import "./Question.css";
 import MultipleChoice from "./MultipleChoice";
 
-
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
-import { appCommonSliceRes, saveQuesModal, toggleAddQues } from "../../../store/adminAppCommonStates";
+import {
+  appCommonSliceRes,
+  saveQuesModal,
+  toggleAddQues,
+} from "../../../store/adminAppCommonOperations";
 import { multipleChoiceOptionAns } from "../../../store/slices/quesMultipleChoiceSlice";
-
+import {
+  setAnswerType,
+  setMultipleChoice,
+  setMultipleChoiceAnswer,
+  setQuestion,
+  setSageMathScript,
+  setWrittenAnswer,
+} from "../../../store/adminAppJSONFormation";
 
 function QuestionModal(props: any) {
   const dispatch = useAppDispatch();
@@ -17,8 +27,7 @@ function QuestionModal(props: any) {
   const inputQues: any = useRef("");
   const inputAnswer: any = useRef("");
   const inputScript: any = useRef("");
-  
-  
+
   let question: any;
   let writtenAnswer: any;
   let sageScript: any;
@@ -45,15 +54,26 @@ function QuestionModal(props: any) {
   };
   const inputAnswerHandler = () => {
     writtenAnswer = inputAnswer.current.value;
-    setShowAnswer(writtenAnswer);
-    setShowAlertWrittenAns(false);
-    dispatch(saveQuesModal(true));
+    if (writtenAnswer !== "") {
+      setShowAnswer(writtenAnswer);
+      setShowAlertWrittenAns(false);
+      dispatch(saveQuesModal(true));
+    } else {
+      setShowAlertWrittenAns(true);
+      dispatch(saveQuesModal(false));
+    }
   };
   const inputSageScriptHandler = () => {
     sageScript = inputScript.current.value;
-    setShowScript(sageScript);
-    setShowAlertSageMath(false);
-    dispatch(saveQuesModal(true));
+    if (sageScript !== "") {
+      setShowScript(sageScript);
+      setShowAlertSageMath(false);
+      dispatch(saveQuesModal(true));
+    }else{
+      setShowAlertSageMath(true);
+      dispatch(saveQuesModal(false));
+
+    }
   };
   const addQuestion = (event: any) => {
     event.preventDefault();
@@ -67,59 +87,67 @@ function QuestionModal(props: any) {
     dispatch(saveQuesModal(false));
   };
 
-  const saveModal = (event: any) => {
+  const saveQuestionModal = (event: any) => {
     event.preventDefault();
-    if (radioClick === "MultipleChoice") {
-      questionModalArr.push({
-        Question: showQues,
-        AnswerType: radioClick,
-        OptionsAndAnswer: optionsAnswer,
-      });
-      localStorage.setItem("QuestionModal", JSON.stringify(questionModalArr));
-      dispatch(toggleAddQues(true));
-      props.onHide();
-    }
-    if (radioClick === "WrittenAnswer") {
-      if (showAnswer === "") {
-        setShowAlertWrittenAns(true);
-      } else {
-        setShowAlertWrittenAns(false);
-        questionModalArr.push({
-          Question: showQues,
-          AnswerType: radioClick,
-          Answer: showAnswer,
-        });
-        localStorage.removeItem("QuestionModal");
-        localStorage.setItem("QuestionModal", JSON.stringify(questionModalArr));
-        dispatch(toggleAddQues(true));
-        props.onHide();
-      }
-    }
-    if (radioClick === "SageMath") {
-      if (showScript === "") {
-        setShowAlertSageMath(true);
-      } else {
-        setShowAlertSageMath(false);
-        questionModalArr.push({
-          Question: showQues,
-          AnswerType: radioClick,
-          script: showScript,
-        });
-        localStorage.removeItem("QuestionModal");
-        localStorage.setItem("QuestionModal", JSON.stringify(questionModalArr));
-        dispatch(toggleAddQues(true));
-        props.onHide();
-      }
-    }
-    console.log("JSON OF QUESTION MODAL - ", JSON.stringify(questionModalArr));
+    dispatch(setQuestion(showQues));
+    dispatch(setAnswerType(radioClick));
+    dispatch(setMultipleChoice(optionsAnswer.options));
+    dispatch(setMultipleChoiceAnswer(optionsAnswer.finalAnswer));
+    dispatch(setWrittenAnswer(showAnswer));
+    dispatch(setSageMathScript(showScript));
+    dispatch(toggleAddQues(true));
+    props.onHide();
+    console.log("Quesitons Modal Saved Successfully");
+
+    // if (radioClick === "MultipleChoice") {
+    //   questionModalArr.push({
+    //     Question: showQues,
+    //     AnswerType: radioClick,
+    //     OptionsAndAnswer: optionsAnswer,
+    //   });
+    //   localStorage.setItem("QuestionModal", JSON.stringify(questionModalArr));
+    //   dispatch(toggleAddQues(true));
+    //   props.onHide();
+    // }
+    // if (radioClick === "WrittenAnswer") {
+    //   if (showAnswer === "") {
+    //     setShowAlertWrittenAns(true);
+    //   } else {
+    //     setShowAlertWrittenAns(false);
+    //     questionModalArr.push({
+    //       Question: showQues,
+    //       AnswerType: radioClick,
+    //       Answer: showAnswer,
+    //     });
+    //     localStorage.removeItem("QuestionModal");
+    //     localStorage.setItem("QuestionModal", JSON.stringify(questionModalArr));
+    //     dispatch(toggleAddQues(true));
+    //     props.onHide();
+    //   }
+    // }
+    // if (radioClick === "SageMath") {
+    //   if (showScript === "") {
+    //     setShowAlertSageMath(true);
+    //   } else {
+    //     setShowAlertSageMath(false);
+    //     questionModalArr.push({
+    //       Question: showQues,
+    //       AnswerType: radioClick,
+    //       script: showScript,
+    //     });
+    //     localStorage.removeItem("QuestionModal");
+    //     localStorage.setItem("QuestionModal", JSON.stringify(questionModalArr));
+    //     dispatch(toggleAddQues(true));
+    //     props.onHide();
+    //   }
+    // }
   };
-  const clickQuestionEdit = (event:any) =>{
+
+  const clickQuestionEdit = (event: any) => {
     event.preventDefault();
     setAddQues(true);
     setRadioBtn(false);
-
-  }
-  const submitQuestionForm = () => {};
+  };
 
   return (
     <Modal
@@ -133,14 +161,11 @@ function QuestionModal(props: any) {
       </Modal.Header>
       <Modal.Body>
         <h4>Task</h4>
-        <form onSubmit={submitQuestionForm}>
+        <form>
           {!addQues && (
             <div>
               {showQues} &nbsp; &nbsp;
-              <a
-                href="#"
-                onClick={clickQuestionEdit}
-              >
+              <a href="#" onClick={clickQuestionEdit}>
                 edit
               </a>
             </div>
@@ -226,14 +251,14 @@ function QuestionModal(props: any) {
             <div>
               <h4 className="text-center text-muted">Written Answer</h4>
               <div className="input-group mb-3">
-              <textarea
-                className="form-control"
-                ref={inputAnswer}
-                defaultValue={showAnswer}
-                onChange={inputAnswerHandler}
-                placeholder="Your Answer goes here"
-                aria-label="Your Answer goes here"
-              ></textarea>
+                <textarea
+                  className="form-control"
+                  ref={inputAnswer}
+                  defaultValue={showAnswer}
+                  onChange={inputAnswerHandler}
+                  placeholder="Your Answer goes here"
+                  aria-label="Your Answer goes here"
+                ></textarea>
                 {/* <input
                   type="text"
                   className="form-control"
@@ -255,14 +280,14 @@ function QuestionModal(props: any) {
             <div>
               <h4 className="text-center text-muted">Sage Math</h4>
               <div className="input-group mb-3">
-              <textarea
-                className="form-control"
-                ref={inputScript}
-                defaultValue={showScript}
-                onChange={inputSageScriptHandler}
-                placeholder="Your Script goes here"
-                aria-label="Your Script goes here"
-              ></textarea>
+                <textarea
+                  className="form-control"
+                  ref={inputScript}
+                  defaultValue={showScript}
+                  onChange={inputSageScriptHandler}
+                  placeholder="Your Script goes here"
+                  aria-label="Your Script goes here"
+                ></textarea>
               </div>
               {showAlertSageMath && (
                 <p className="text-danger">
@@ -274,7 +299,10 @@ function QuestionModal(props: any) {
         </form>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={saveModal} disabled={!appOperations.saveQuesModal}>
+        <Button
+          onClick={saveQuestionModal}
+          disabled={!appOperations.saveQuesModal}
+        >
           Save
         </Button>
         <Button onClick={props.onHide}>Close</Button>
