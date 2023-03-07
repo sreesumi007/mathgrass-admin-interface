@@ -59,7 +59,7 @@ export const {
   addGraphicalHintsWithOrder,
   clearArray
 } = hintsWithOrderSlice.actions;
-export const textHintsWithOrder = (state: RootState) =>
+export const hintsWithOrder = (state: RootState) =>
   state.hintsWithOrderSlice;
 
 export default hintsWithOrderSlice.reducer;

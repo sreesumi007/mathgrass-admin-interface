@@ -58,7 +58,6 @@ const MultipleChoice = () => {
     const filteredChoice: (string | null)[] =choiceOption.filter(choice=>choice!="");
     dispatch(setOptions(filteredChoice));
     dispatch(setFinalAnswer(corrAnswer));
-    console.log("Check the options Values from mapped array - ",filteredChoice);
     // Change for REdux call - Ends
     dispatch(saveQuesModal(true));
   };

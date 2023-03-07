@@ -5,18 +5,18 @@ import { textHintSliceArray } from "../../../store/slices/textHintSlice";
 
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
 import {
+  addGraphicalHintsWithOrder,
   addScriptHintsWithOrder,
   addTextHintsWithOrder,
-  clearArray,
-  textHintsWithOrder,
+  clearArray  
 } from "../../../store/slices/hintsWithOrderSlice";
+
 
 type InputValues = { [key: string]: string };
 
 const HintsOrderModal = (props: any) => {
   const appOperations = useAppSelector(appCommonSliceRes);
   const textHintsArr = useAppSelector(textHintSliceArray);
-  // const hintsWithOrder = useAppSelector(textHintsWithOrder);
   const dispatch = useAppDispatch();
 
   const [inputValues, setInputValues] = useState<InputValues>({});
@@ -52,7 +52,7 @@ const HintsOrderModal = (props: any) => {
           );
         }
       }
-      console.log("Text hints with order - ", inputValues);
+      props.onHide();
     }
     if (appOperations.scriptHintValue !== "") {
       dispatch(
@@ -61,16 +61,17 @@ const HintsOrderModal = (props: any) => {
           order: scriptHintOrder,
         })
       );
+      props.onHide();
     }
     if (appOperations.graphicalHintValue !== "") {
       dispatch(
-        addScriptHintsWithOrder({
+        addGraphicalHintsWithOrder({
           hint: appOperations.graphicalHintValue,
           order: graphicalHintOrder,
         })
       );
+      props.onHide();
     }
-    props.onHide();
   };
 
   const clickClose = (event: any) => {
@@ -86,7 +87,7 @@ const HintsOrderModal = (props: any) => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header >
+        <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
             HINTS ORDER
           </Modal.Title>

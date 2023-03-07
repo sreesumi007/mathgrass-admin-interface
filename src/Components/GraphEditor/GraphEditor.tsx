@@ -18,12 +18,16 @@ import {
   passGraphicalHintvalue,
 } from "../../store/adminAppCommonOperations";
 import GraphicalHints from "./PopupModal/GraphicalHints";
-import { adminAppJSON } from "../../store/adminAppJSONFormation";
+import { adminAppJSON, setGraphElementId } from "../../store/adminAppJSONFormation";
+import {  hintsWithOrder } from "../../store/slices/hintsWithOrderSlice";
 
 const GraphEditor = () => {
   const appOperations = useAppSelector(appCommonSliceRes);
-  const appJson = useAppSelector(adminAppJSON);
+  const adminAppJson = useAppSelector(adminAppJSON);
+  const hints = useAppSelector(hintsWithOrder);
   const dispatch = useAppDispatch();
+
+  let selectedElements:any = [];
   localStorage.setItem(
     "LinkDirection",
     JSON.stringify(appOperations.linkDirection)
@@ -69,11 +73,10 @@ const GraphEditor = () => {
 
   const addGraphicalHints = (event: any) => {
     event.preventDefault();
-    console.log("arrray value - " + arrayElement);
-
+    selectedElements.push(arrayElement);
     if (arrayElement.length > 0) {
       setHintModalShow(true);
-      localStorage.setItem("ElementId", JSON.stringify(arrayElement));
+      dispatch(setGraphElementId(arrayElement));
       dispatch(passGraphicalHintElemLen(arrayElement.length));
       setShowGraphicalHintAlert(false);
     } else {
@@ -90,10 +93,11 @@ const GraphEditor = () => {
     };
   }, []);
   // Clear LocalStorage on reload - Ends
-  const checkJsonCalled = (event: any) => {
+  const adminAppJSONFormation = (event: any) => {
     event.preventDefault();
     $("#" + iden.SaveGraph).click();
-    console.log("JSOn button triggered -", appJson);
+    console.log("Hints with Order -",hints)
+    console.log("Admin App Json -", adminAppJson);
   };
 
   useEffect(() => {
@@ -163,7 +167,6 @@ const GraphEditor = () => {
       const graphLinks = graph.getLinks();
       for (const link of graphLinks) {
         link.attr("line/stroke", "black");
-        // console.log("link item - ",link.attributes.type);
       }
       getNameForNode(elementView);
     });
@@ -188,6 +191,7 @@ const GraphEditor = () => {
           element.model.attr("body/stroke", "black");
         }
         setArrayElement(arrOfIdBlue);
+        selectedElements.push(arrOfIdBlue);
       }
     });
 
@@ -425,7 +429,7 @@ const GraphEditor = () => {
                 right: "320px",
                 bottom: "50px",
               }}
-              onClick={checkJsonCalled}
+              onClick={adminAppJSONFormation}
               disabled={!appOperations.saveGraphToggle}
             >
               Save Graph

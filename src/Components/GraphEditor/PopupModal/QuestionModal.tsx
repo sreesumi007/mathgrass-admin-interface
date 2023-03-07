@@ -69,10 +69,9 @@ function QuestionModal(props: any) {
       setShowScript(sageScript);
       setShowAlertSageMath(false);
       dispatch(saveQuesModal(true));
-    }else{
+    } else {
       setShowAlertSageMath(true);
       dispatch(saveQuesModal(false));
-
     }
   };
   const addQuestion = (event: any) => {
@@ -91,13 +90,24 @@ function QuestionModal(props: any) {
     event.preventDefault();
     dispatch(setQuestion(showQues));
     dispatch(setAnswerType(radioClick));
-    dispatch(setMultipleChoice(optionsAnswer.options));
-    dispatch(setMultipleChoiceAnswer(optionsAnswer.finalAnswer));
-    dispatch(setWrittenAnswer(showAnswer));
-    dispatch(setSageMathScript(showScript));
-    dispatch(toggleAddQues(true));
-    props.onHide();
     console.log("Quesitons Modal Saved Successfully");
+    if (radioClick === "MultipleChoice") {
+      dispatch(setMultipleChoice(optionsAnswer.options));
+      dispatch(setMultipleChoiceAnswer(optionsAnswer.finalAnswer));
+      dispatch(toggleAddQues(true));
+      props.onHide();
+    }
+    if (radioClick === "WrittenAnswer") {
+      dispatch(setWrittenAnswer(showAnswer));
+      dispatch(toggleAddQues(true));
+      props.onHide();
+    }
+    if (radioClick === "SageMath") {
+      dispatch(setSageMathScript(showScript));
+      dispatch(toggleAddQues(true));
+      props.onHide();
+      
+    }
 
     // if (radioClick === "MultipleChoice") {
     //   questionModalArr.push({

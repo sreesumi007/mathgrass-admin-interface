@@ -15,9 +15,6 @@ import { adminAppJSON } from "../../../store/adminAppJSONFormation";
 const HintsModal = (props: any) => {
   const dispatch = useAppDispatch();
   const appOperatins = useAppSelector(appCommonSliceRes);
-  const appJson = useAppSelector(adminAppJSON);
-  console.log("check question modal -",appJson);
-
   const hintsModalArr: any = [];
   const textHintsArr: any = [];
   const inputScriptHint: any = useRef("");
@@ -42,6 +39,8 @@ const HintsModal = (props: any) => {
   // Check click outside - Ends
   const hintSaveHandler = (event: any) => {
     event.preventDefault();
+    
+
     if (checkTextHint === true && checkScriptHint === false) {
       if (inputFields[0].value === "") {
         setAlertMessage(
@@ -53,8 +52,6 @@ const HintsModal = (props: any) => {
           hintType: "TextualHints",
           hints: inputFields,
         });
-        console.log("The saved hints - ", JSON.stringify(hintsModalArr));
-        localStorage.setItem("HintsModal", JSON.stringify(hintsModalArr));
         for (let i = 0; i < inputFields.length; i++) {
           textHintsArr.push(inputFields[i].value);
         }
@@ -75,8 +72,6 @@ const HintsModal = (props: any) => {
           hintType: "ScriptHints",
           hint: inputScriptHint.current.value,
         });
-        console.log("The saved hints - ", JSON.stringify(hintsModalArr));
-        localStorage.setItem("HintsModal", JSON.stringify(hintsModalArr));
         dispatch(passScriptHintvalue(inputScriptHint.current.value));
         dispatch(passOrderHintsOpen(true));
         dispatch(toggleAddHints(true));
@@ -110,8 +105,6 @@ const HintsModal = (props: any) => {
             hint: inputScriptHint.current.value,
           },
         });
-        console.log("The saved hints - ", JSON.stringify(hintsModalArr));
-        localStorage.setItem("HintsModal", JSON.stringify(hintsModalArr));
         for (let i = 0; i < inputFields.length; i++) {
           textHintsArr.push(inputFields[i].value);
         }
@@ -130,7 +123,6 @@ const HintsModal = (props: any) => {
   function handleAddField() {
     setCounterAdd(counterAdd + 1);
     setInputFields([...inputFields, { value: "" }]);
-    console.log(inputFields[0]);
   }
 
   function handleRemoveField(index: any) {
