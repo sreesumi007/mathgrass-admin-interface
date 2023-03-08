@@ -9,6 +9,7 @@ interface AdminAppJSONFormation {
   writtenAnswer: string;
   sageMathScript: string;
   graphElemetId: string[];
+  graphLinkId: string[];
 }
 
 const initialState: AdminAppJSONFormation = {
@@ -18,7 +19,8 @@ const initialState: AdminAppJSONFormation = {
   multipleChoiceAnswer: "",
   writtenAnswer: "",
   sageMathScript: "",
-  graphElemetId:[]
+  graphElemetId:[],
+  graphLinkId:[]
 };
 
 export const adminAppJSONFormation = createSlice({
@@ -46,6 +48,9 @@ export const adminAppJSONFormation = createSlice({
     setGraphElementId: (state, action: PayloadAction<string[]>) => {
       state.graphElemetId = action.payload;
     },
+    setGraphLinkId: (state, action: PayloadAction<string[]>) => {
+      state.graphLinkId = action.payload;
+    },
   },
 });
 
@@ -56,7 +61,8 @@ export const {
   setMultipleChoiceAnswer,
   setWrittenAnswer,
   setSageMathScript,
-  setGraphElementId
+  setGraphElementId,
+  setGraphLinkId
 } = adminAppJSONFormation.actions;
 export const adminAppJSON = (state: RootState) => state.adminAppJSONFormation;
 

@@ -54,7 +54,9 @@ const GraphicalHints = (props: any) => {
       </Modal.Header>
       <Modal.Body>
         <h6 className="mb-2 text-muted text-center">
-          Number of Elements/links selected: {appOperations.graphicalElemLen}
+          Elements selected: {appOperations.graphicalElemLen}
+          <br />
+          Links selected: {appOperations.graphicalLinkLen}
         </h6>
         <br />
         <h5 className="text-center text-muted">Your Hint</h5>

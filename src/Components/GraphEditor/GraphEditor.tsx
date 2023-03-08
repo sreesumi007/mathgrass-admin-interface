@@ -17,23 +17,31 @@ import {
   passGraphicalHintsOpen,
   passGraphicalHintvalue,
   openTextualAndScriptHints,
+  passGraphicalHintLinkLen,
+  addElementFromGraph,
+  removeElementFromGraph,
+  addLinksFromGraph,
+  removeLinksFromGraph,
 } from "../../store/adminAppCommonOperations";
 import GraphicalHints from "./PopupModal/GraphicalHints";
-import { adminAppJSON, setGraphElementId } from "../../store/adminAppJSONFormation";
-import {  hintsWithOrder } from "../../store/slices/hintsWithOrderSlice";
+import {
+  adminAppJSON,
+  setGraphElementId,
+  setGraphLinkId,
+} from "../../store/adminAppJSONFormation";
+import { hintsWithOrder } from "../../store/slices/hintsWithOrderSlice";
 
 const GraphEditor = () => {
   const appOperations = useAppSelector(appCommonSliceRes);
   const adminAppJson = useAppSelector(adminAppJSON);
   const hints = useAppSelector(hintsWithOrder);
   const dispatch = useAppDispatch();
-
-  let selectedElements:any = [];
   localStorage.setItem(
     "LinkDirection",
     JSON.stringify(appOperations.linkDirection)
   );
-  let arrOfIdBlue: any = [];
+  
+  
 
   const nameInputRef: any = useRef("");
   let nameAlreadyExists: boolean;
@@ -42,14 +50,9 @@ const GraphEditor = () => {
   const [nameExists, setNameExists] = useState(false);
   const [showNameEdit, setShowNameEdit] = useState(false);
   const [jsonState, setJsonState] = useState("");
-  const [quesModal, setQuesModal] = useState("");
-  const [hintsModal, setHintsModal] = useState("");
   const [jsonCall, setJsonCall] = useState(false);
-
   const [showGraphicalHintAlert, setShowGraphicalHintAlert] = useState(false);
-  const [arrayElement, setArrayElement] = useState([]);
   const [hintModalShow, setHintModalShow] = useState(false);
-  const [graphicalHintsModal, setGraphicalHintsModal] = useState("");
 
   const disableSaveGraphBtn = () => {
     dispatch(saveGraphBtn(false));
@@ -74,11 +77,12 @@ const GraphEditor = () => {
 
   const addGraphicalHints = (event: any) => {
     event.preventDefault();
-    selectedElements.push(arrayElement);
-    if (arrayElement.length > 0) {
+    if (appOperations.arrayOfElements.length > 0 || appOperations.arrayOfLinks.length > 0) {
       setHintModalShow(true);
-      dispatch(setGraphElementId(arrayElement));
-      dispatch(passGraphicalHintElemLen(arrayElement.length));
+      dispatch(setGraphElementId(appOperations.arrayOfElements));
+      dispatch(setGraphLinkId(appOperations.arrayOfLinks));
+      dispatch(passGraphicalHintElemLen(appOperations.arrayOfElements.length));
+      dispatch(passGraphicalHintLinkLen(appOperations.arrayOfLinks.length));
       setShowGraphicalHintAlert(false);
     } else {
       setShowGraphicalHintAlert(true);
@@ -97,7 +101,7 @@ const GraphEditor = () => {
   const adminAppJSONFormation = (event: any) => {
     event.preventDefault();
     $("#" + iden.SaveGraph).click();
-    console.log("Hints with Order -",hints)
+    console.log("Hints with Order -", hints);
     console.log("Admin App Json -", adminAppJson);
   };
 
@@ -171,28 +175,33 @@ const GraphEditor = () => {
       }
       getNameForNode(elementView);
     });
+    paper.on("link:pointerclick", (linkView: any) => {
+      const isGraphicalHint = localStorage.getItem("GraphicalHint");
+      console.log("Link id -",linkView.model.attributes.id)
+      if (isGraphicalHint === "true") {
+        if (linkView.model.attributes.attrs.line.stroke === "#333333") {
+          console.log("Came into link if block");
+          linkView.model.attr("line/stroke", "blue");
+          dispatch(addLinksFromGraph(linkView.model.attributes.id));
+        } else {
+          linkView.model.attr("line/stroke", "black");
+          dispatch(removeLinksFromGraph(linkView.model.attributes.id));
+        }
+      }
+    });
     paper.on("element:pointerclick", (element: any) => {
       const isGraphicalHint = localStorage.getItem("GraphicalHint");
-      const index = arrOfIdBlue.indexOf(element.model.attributes.id);
       if (isGraphicalHint === "true") {
         if (
           element.model.attributes.attrs.body.stroke === "black" ||
           element.model.attributes.attrs.body.stroke === "#ff8800"
         ) {
           element.model.attr("body/stroke", "blue");
-          if (index === -1) {
-            arrOfIdBlue.push(element.model.attributes.id);
-          } else {
-            arrOfIdBlue.splice(index, 1);
-          }
+          dispatch(addElementFromGraph(element.model.attributes.id));
         } else {
-          if (element.model.attributes.attrs.body.stroke === "blue") {
-            arrOfIdBlue.splice(index, 1);
-          }
+          dispatch(removeElementFromGraph(element.model.attributes.id));
           element.model.attr("body/stroke", "black");
         }
-        setArrayElement(arrOfIdBlue);
-        selectedElements.push(arrOfIdBlue);
       }
     });
 
@@ -264,19 +273,8 @@ const GraphEditor = () => {
 
     $("#" + iden.SaveGraph).click(() => {
       let json = JSON.stringify(graph.toJSON());
-
-      let questionModal = JSON.parse(
-        localStorage.getItem("QuestionModal") || "[]"
-      );
-      let hintsModal = JSON.parse(localStorage.getItem("HintsModal") || "[]");
-      let graphicalHintsModal = JSON.parse(
-        localStorage.getItem("GraphicalHints") || "[]"
-      );
       setJsonCall(true);
       setJsonState(json);
-      setQuesModal(JSON.stringify(questionModal));
-      setHintsModal(JSON.stringify(hintsModal));
-      setGraphicalHintsModal(JSON.stringify(graphicalHintsModal));
       setShowNameEdit(false);
       dispatch(saveGraphBtn(false));
       dispatch(passGraphicalHintsOpen(false));
@@ -306,8 +304,18 @@ const GraphEditor = () => {
           },
         });
       });
-      setArrayElement([]);
-      arrOfIdBlue = [];
+
+      // const arry:any = [];
+      // graph.getElements().forEach((elem) => {
+      //   console.log("Graph elements -",elem.attr("body/stroke"));
+      //   if(elem.attr("body/stroke") === "blue"){
+      //     arry.push(elem.attributes.id);
+      //   }
+
+      // });
+      // console.log("Graph elements Array final-",arry);
+      // setArrayElement([]);
+      // arrOfIdBlue = [];
     });
     // paper.on("link:pointerdblclick", (linkView) => {
     //   // setLinkClick(elementView.model.isElement());
@@ -574,9 +582,6 @@ const GraphEditor = () => {
                     Nodes with Links
                   </h6>
                   <p>{jsonState}</p>
-                  <p>{quesModal}</p>
-                  <p>{hintsModal}</p>
-                  <p>{graphicalHintsModal}</p>
                 </div>
               </div>
             )}

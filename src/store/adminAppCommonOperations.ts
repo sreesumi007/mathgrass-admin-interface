@@ -12,9 +12,12 @@ export interface AppState {
   graphicalHint: boolean;
   graphicalElemLen: string;
   graphicalHintValue:string;
+  graphicalLinkLen:string;
   scriptHintValue:string;
   openOrderHintsModal:boolean;
   openTextualAndScriptHints:boolean;
+  arrayOfElements: string[];
+  arrayOfLinks: string[];
   
 }
 
@@ -32,6 +35,9 @@ const initialState: AppState = {
   graphicalElemLen:"",
   graphicalHintValue:"",
   scriptHintValue:"",
+  graphicalLinkLen:"",
+  arrayOfElements:[],
+  arrayOfLinks:[]
 };
 
 const appCommonSlice = createSlice({
@@ -65,6 +71,9 @@ const appCommonSlice = createSlice({
     passGraphicalHintElemLen: (state, action) => {
       state.graphicalElemLen = action.payload;
     },
+    passGraphicalHintLinkLen: (state, action) => {
+      state.graphicalLinkLen = action.payload;
+    },
     passGraphicalHintvalue: (state, action) => {
       state.graphicalHintValue = action.payload;
     },
@@ -76,6 +85,18 @@ const appCommonSlice = createSlice({
     },
     openTextualAndScriptHints: (state, action) => {
       state.openTextualAndScriptHints = action.payload;
+    },
+    addElementFromGraph: (state, action) => {
+      state.arrayOfElements.push(action.payload);
+    },
+    removeElementFromGraph: (state, action) => {
+      state.arrayOfElements.splice(action.payload,1);
+    },
+    addLinksFromGraph: (state, action) => {
+      state.arrayOfLinks.push(action.payload);
+    },
+    removeLinksFromGraph: (state, action) => {
+      state.arrayOfLinks.splice(action.payload,1);
     },
   },
 });
@@ -89,9 +110,14 @@ export const {
   questionFlushCall,
   passGraphicalHintsOpen,
   passGraphicalHintElemLen,
+  passGraphicalHintLinkLen,
   passGraphicalHintvalue,
   passScriptHintvalue,
   passOrderHintsOpen,
+  addElementFromGraph,
+  removeElementFromGraph,
+  addLinksFromGraph,
+  removeLinksFromGraph,
   openTextualAndScriptHints
 } = appCommonSlice.actions;
 export const appCommonSliceRes = (state: RootState) => state.appCommonSlice;
