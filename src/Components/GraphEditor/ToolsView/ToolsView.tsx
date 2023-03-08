@@ -7,7 +7,9 @@ import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
 import {
   appCommonSliceRes,
   hintsFlushCall,
+  openTextualAndScriptHints,
   passGraphicalHintsOpen,
+  questionFlushCall,
   toggleAddHints,
   toggleAddQues,
   toggleLinkDirection,
@@ -108,7 +110,7 @@ const ToolsView = () => {
               <h5 className="card-title text-center">QUESTIONS</h5>
               {!appOperations.toggleAddQues && (
                 <h6 className="card-subtitle mb-2 text-muted text-center">
-                  <a href="#" onClick={() => setQuesModalShow(true)}>
+                  <a href="#" onClick={() => {setQuesModalShow(true);dispatch(questionFlushCall(true))}}>
                     Add Ques
                   </a>
                 </h6>
@@ -155,6 +157,7 @@ const ToolsView = () => {
                             "GraphicalHint",
                             JSON.stringify(!graphicalHints)
                           );
+                          dispatch(openTextualAndScriptHints(!graphicalHints));
                         }}
                       />
                       <label
@@ -171,6 +174,7 @@ const ToolsView = () => {
                     <h6 className="card-title text-center">
                       Textual and Script Hints
                     </h6>
+                    {appOperations.openTextualAndScriptHints===false && 
                     <h6 className="card-subtitle mb-2 text-muted text-center">
                       <a
                         href="#"
@@ -181,7 +185,7 @@ const ToolsView = () => {
                       >
                         Add Hints
                       </a>
-                    </h6>
+                    </h6>}
                   </Fragment>
                 )}
                 <HintsModal

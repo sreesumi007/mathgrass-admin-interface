@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import {
   appCommonSliceRes,
+  openTextualAndScriptHints,
   passGraphicalHintvalue,
 } from "../../../store/adminAppCommonOperations";
 import { adminAppJSON } from "../../../store/adminAppJSONFormation";
@@ -22,6 +23,7 @@ const GraphicalHints = (props: any) => {
       setShowEmptyAlert(true);
     } else {
       dispatch(passGraphicalHintvalue(inputGraphicalHint.current.value));
+      dispatch(openTextualAndScriptHints(false));
       graphicalHintArray.push({
         numberOfElement: appOperations.graphicalElemLen,
         graphicalHint: inputGraphicalHint.current.value,

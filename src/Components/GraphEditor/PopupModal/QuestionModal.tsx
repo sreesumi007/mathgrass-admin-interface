@@ -1,16 +1,20 @@
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Question.css";
 import MultipleChoice from "./MultipleChoice";
 
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
 import {
   appCommonSliceRes,
+  questionFlushCall,
   saveQuesModal,
   toggleAddQues,
 } from "../../../store/adminAppCommonOperations";
-import { multipleChoiceOptionAns } from "../../../store/slices/quesMultipleChoiceSlice";
+import {
+  clearArray,
+  multipleChoiceOptionAns,
+} from "../../../store/slices/quesMultipleChoiceSlice";
 import {
   setAnswerType,
   setMultipleChoice,
@@ -33,6 +37,21 @@ function QuestionModal(props: any) {
   let sageScript: any;
   let quesType: any;
   const questionModalArr: any = [];
+  
+  useEffect(()=>{
+    console.log("Use Effect for question modal created");
+    dispatch(saveQuesModal(false));
+    setShowQues("");
+    dispatch(clearArray());
+    setShowAnswer("");
+    setShowScript("");
+    setAddQues(true);
+    setShowAlertWrittenAns(false);
+    setShowAlertSageMath(false);
+    setRadioBtn(false);
+    setCheckBlankInput(true);
+    setRadioClick("");
+  },[appOperations.questionFlush===true]);
 
   const [addQues, setAddQues] = useState(true);
   const [showQues, setShowQues] = useState("");
@@ -82,14 +101,19 @@ function QuestionModal(props: any) {
   };
   const onRadioChange = (event: any) => {
     quesType = event.target.value;
+    console.log("Check it -", quesType);
     setRadioClick(quesType);
     dispatch(saveQuesModal(false));
+    dispatch(clearArray());
+    setShowAnswer("");
+    setShowScript("");
   };
 
   const saveQuestionModal = (event: any) => {
     event.preventDefault();
     dispatch(setQuestion(showQues));
     dispatch(setAnswerType(radioClick));
+    dispatch(questionFlushCall(false));
     console.log("Quesitons Modal Saved Successfully");
     if (radioClick === "MultipleChoice") {
       dispatch(setMultipleChoice(optionsAnswer.options));
@@ -106,7 +130,6 @@ function QuestionModal(props: any) {
       dispatch(setSageMathScript(showScript));
       dispatch(toggleAddQues(true));
       props.onHide();
-      
     }
 
     // if (radioClick === "MultipleChoice") {
@@ -151,6 +174,11 @@ function QuestionModal(props: any) {
     //     props.onHide();
     //   }
     // }
+  };
+  const clickCloseBtn = (event: any) => {
+    event.preventDefault();
+    dispatch(questionFlushCall(false));
+    props.onHide();
   };
 
   const clickQuestionEdit = (event: any) => {
@@ -315,7 +343,7 @@ function QuestionModal(props: any) {
         >
           Save
         </Button>
-        <Button onClick={props.onHide}>Close</Button>
+        <Button onClick={clickCloseBtn}>Close</Button>
       </Modal.Footer>
     </Modal>
   );

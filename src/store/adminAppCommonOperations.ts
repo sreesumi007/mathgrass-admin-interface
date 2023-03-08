@@ -8,11 +8,13 @@ export interface AppState {
   toggleAddQues: boolean;
   toggleAddHints: boolean;
   hintsFlush: boolean;
+  questionFlush:boolean;
   graphicalHint: boolean;
   graphicalElemLen: string;
   graphicalHintValue:string;
   scriptHintValue:string;
   openOrderHintsModal:boolean;
+  openTextualAndScriptHints:boolean;
   
 }
 
@@ -23,8 +25,10 @@ const initialState: AppState = {
   toggleAddQues: false,
   toggleAddHints: false,
   hintsFlush: false,
+  questionFlush: false,
   graphicalHint: false,
   openOrderHintsModal:false,
+  openTextualAndScriptHints:false,
   graphicalElemLen:"",
   graphicalHintValue:"",
   scriptHintValue:"",
@@ -52,6 +56,9 @@ const appCommonSlice = createSlice({
     hintsFlushCall: (state, action) => {
       state.hintsFlush = action.payload;
     },
+    questionFlushCall: (state, action) => {
+      state.questionFlush = action.payload;
+    },
     passGraphicalHintsOpen: (state, action) => {
       state.graphicalHint = action.payload;
     },
@@ -67,6 +74,9 @@ const appCommonSlice = createSlice({
     passOrderHintsOpen: (state, action) => {
       state.openOrderHintsModal = action.payload;
     },
+    openTextualAndScriptHints: (state, action) => {
+      state.openTextualAndScriptHints = action.payload;
+    },
   },
 });
 export const {
@@ -76,11 +86,13 @@ export const {
   toggleAddQues,
   toggleAddHints,
   hintsFlushCall,
+  questionFlushCall,
   passGraphicalHintsOpen,
   passGraphicalHintElemLen,
   passGraphicalHintvalue,
   passScriptHintvalue,
-  passOrderHintsOpen
+  passOrderHintsOpen,
+  openTextualAndScriptHints
 } = appCommonSlice.actions;
 export const appCommonSliceRes = (state: RootState) => state.appCommonSlice;
 export default appCommonSlice.reducer;

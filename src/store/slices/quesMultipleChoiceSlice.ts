@@ -21,10 +21,14 @@ export const quesMultipleChoiceSlice = createSlice({
     setFinalAnswer: (state, action: PayloadAction<string>) => {
       state.finalAnswer = action.payload;
     },
+    clearArray(state) {
+      state.options = [];
+      state.finalAnswer = "";
+    },
   },
 });
 
-export const { setOptions, setFinalAnswer } = quesMultipleChoiceSlice.actions;
+export const { setOptions, setFinalAnswer,clearArray } = quesMultipleChoiceSlice.actions;
 export const multipleChoiceOptionAns = (state: RootState) => state.quesMultipleChoiceSlice;
 
 export default quesMultipleChoiceSlice.reducer;

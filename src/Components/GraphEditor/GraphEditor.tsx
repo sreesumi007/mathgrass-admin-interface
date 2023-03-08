@@ -16,6 +16,7 @@ import {
   passGraphicalHintElemLen,
   passGraphicalHintsOpen,
   passGraphicalHintvalue,
+  openTextualAndScriptHints,
 } from "../../store/adminAppCommonOperations";
 import GraphicalHints from "./PopupModal/GraphicalHints";
 import { adminAppJSON, setGraphElementId } from "../../store/adminAppJSONFormation";
@@ -530,6 +531,7 @@ const GraphEditor = () => {
                           style={{ float: "right" }}
                           onClick={() => {
                             dispatch(passGraphicalHintsOpen(false));
+                            dispatch(openTextualAndScriptHints(false));
                           }}
                         >
                           Close
@@ -545,6 +547,7 @@ const GraphEditor = () => {
                         className="fa fa-trash-o"
                         onClick={() => {
                           dispatch(passGraphicalHintvalue(""));
+                          dispatch(openTextualAndScriptHints(true));
                         }}
                         style={{
                           float: "right",
