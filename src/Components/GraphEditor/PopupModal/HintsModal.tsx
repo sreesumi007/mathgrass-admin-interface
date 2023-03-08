@@ -33,13 +33,11 @@ const HintsModal = (props: any) => {
     setCheckScriptHint(false);
     setCounterAdd(0);
     setInputFields([{ value: "" }]);
-    
   }, [appOperatins.hintsFlush]);
 
   // Check click outside - Ends
   const hintSaveHandler = (event: any) => {
     event.preventDefault();
-    
 
     if (checkTextHint === true && checkScriptHint === false) {
       if (inputFields[0].value === "") {
@@ -156,7 +154,7 @@ const HintsModal = (props: any) => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header >
+        <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">HINTS</Modal.Title>
         </Modal.Header>
         <Modal.Body>

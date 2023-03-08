@@ -7,6 +7,7 @@ import {
 } from "../../../store/adminAppCommonOperations";
 import { adminAppJSON } from "../../../store/adminAppJSONFormation";
 import { useAppDispatch, useAppSelector } from "../../../store/config/hooks";
+import { addGraphicalHintsWithOrder } from "../../../store/slices/hintsWithOrderSlice";
 
 const GraphicalHints = (props: any) => {
   const appOperations = useAppSelector(appCommonSliceRes);
@@ -22,6 +23,12 @@ const GraphicalHints = (props: any) => {
     if (inputGraphicalHint.current.value === "") {
       setShowEmptyAlert(true);
     } else {
+      dispatch(
+        addGraphicalHintsWithOrder({
+          hint: inputGraphicalHint.current.value,
+          order: 0
+        })
+      );
       dispatch(passGraphicalHintvalue(inputGraphicalHint.current.value));
       dispatch(openTextualAndScriptHints(false));
       graphicalHintArray.push({

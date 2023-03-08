@@ -48,7 +48,7 @@ export const hintsWithOrderSlice = createSlice({
     clearArray(state) {
       state.textHints = [];
       state.scriptHints = [];
-      state.scriptHints = [];
+      state.graphicalHints = [];
     },
   },
 });
