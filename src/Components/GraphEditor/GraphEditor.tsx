@@ -40,8 +40,6 @@ const GraphEditor = () => {
     "LinkDirection",
     JSON.stringify(appOperations.linkDirection)
   );
-  
-  
 
   const nameInputRef: any = useRef("");
   let nameAlreadyExists: boolean;
@@ -77,7 +75,10 @@ const GraphEditor = () => {
 
   const addGraphicalHints = (event: any) => {
     event.preventDefault();
-    if (appOperations.arrayOfElements.length > 0 || appOperations.arrayOfLinks.length > 0) {
+    if (
+      appOperations.arrayOfElements.length > 0 ||
+      appOperations.arrayOfLinks.length > 0
+    ) {
       setHintModalShow(true);
       dispatch(setGraphElementId(appOperations.arrayOfElements));
       dispatch(setGraphLinkId(appOperations.arrayOfLinks));
@@ -177,7 +178,7 @@ const GraphEditor = () => {
     });
     paper.on("link:pointerclick", (linkView: any) => {
       const isGraphicalHint = localStorage.getItem("GraphicalHint");
-      console.log("Link id -",linkView.model.attributes.id)
+      console.log("Link id -", linkView.model.attributes.id);
       if (isGraphicalHint === "true") {
         if (linkView.model.attributes.attrs.line.stroke === "#333333") {
           console.log("Came into link if block");
@@ -428,39 +429,6 @@ const GraphEditor = () => {
             <header className="d-block p-2 bg-secondary text-white text-center rounded blockquote">
               GRAPH
             </header>
-            <button
-              type="button"
-              className="btn btn-success btn-rounded"
-              style={{
-                marginRight: "5px",
-                float: "right",
-                position: "absolute",
-                right: "320px",
-                bottom: "50px",
-              }}
-              onClick={adminAppJSONFormation}
-              disabled={!appOperations.saveGraphToggle}
-            >
-              Save Graph
-            </button>
-            <button id="graphChange" style={{ display: "none" }} />
-            <button id="closeGraphicalHint" style={{ display: "none" }} />
-            <button id="saveGraphJson" style={{ display: "none" }} />
-            <button
-              id="clearGraphView"
-              className="btn btn-danger btn-rounded"
-              style={{
-                marginRight: "5px",
-                float: "right",
-                position: "absolute",
-                right: "430px",
-                bottom: "50px",
-              }}
-              disabled={!appOperations.saveGraphToggle}
-            >
-              Clear Graph
-            </button>
-
             <div
               className="canvas"
               id="diagramCanvas"
@@ -471,6 +439,26 @@ const GraphEditor = () => {
                 <div className="bg-gradient-primary"></div>
               </div>
             </div>
+            <div className="col d-flex justify-content-end align-items-end position-absolute bottom-0 end-0">
+              <button
+                type="button"
+                className="btn btn-success btn-rounded me-2"
+                onClick={adminAppJSONFormation}
+                disabled={!appOperations.saveGraphToggle}
+              >
+                Save Graph
+              </button>
+              <button
+                id="clearGraphView"
+                className="btn btn-danger btn-rounded"
+                disabled={!appOperations.saveGraphToggle}
+              >
+                Clear Graph
+              </button>
+            </div>
+            <button id="graphChange" style={{ display: "none" }} />
+            <button id="closeGraphicalHint" style={{ display: "none" }} />
+            <button id="saveGraphJson" style={{ display: "none" }} />
           </div>
           <div
             className="col border border-info rounded"
