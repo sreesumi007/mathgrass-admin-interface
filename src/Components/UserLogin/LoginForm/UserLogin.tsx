@@ -18,19 +18,26 @@ const UserLogin = () => {
   const handleLoginSubmit = async (event: any) => {
     event.preventDefault();
     const results = await dispatch(fetchUserDetails({email:email,password:password}));
-    console.log("Results - ",results.payload.length);
+    console.log("Results - ",results.payload);
     if (password === "") {
       setFieldErrors("Please enter your password");
     } 
     else if (
       results.payload.length>0
     ) {
-      
-      navigate("/user");
+      if(results.payload[0].user_type==="admin"){
+        localStorage.setItem("UserLogin","true");
+        navigate("/user");
+        
+      }
+      else{
+        // window.location.href = "https://images.app.goo.gl/ouqb5zVbhb6LTbNX7"
+        navigate("/student");
+      }
     } 
     else if(results.payload.length===0) {
       setFieldErrors(
-        "You have no access to Admin interface. Contact Supervisor..."
+        "Your email or password is incorrect. If still you can't get it Contact Supervisor..."
       );
     }
 

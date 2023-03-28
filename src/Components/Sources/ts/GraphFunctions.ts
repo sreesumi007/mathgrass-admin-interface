@@ -90,5 +90,7 @@ export function onClearGraphCall(){
   console.log('Array value - ',nameInputArray)
 }
 export const clearLocalStorage = () => {
+  const isLoggedIn = localStorage.get('UserLogin');
   localStorage.clear();
+  localStorage.setItem('UserLogin',isLoggedIn);
 };

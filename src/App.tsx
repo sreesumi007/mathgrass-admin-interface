@@ -6,11 +6,14 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
-    // const isLoggedIn = JSON.stringify(localStorage.getItem('UserLogin'));
-    // if (isLoggedIn==="") {
-    //   navigate("/");
-    // }
-    navigate("/");
+    const isLoggedIn = localStorage.getItem('UserLogin');
+    console.log("Calue",isLoggedIn);
+    if (isLoggedIn==="false") {
+      navigate("/");
+    }else{
+      navigate("/user");
+    }
+    // navigate("/");
   }, []);
   return (
     <Fragment>

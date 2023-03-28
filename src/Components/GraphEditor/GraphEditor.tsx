@@ -30,11 +30,13 @@ import {
   setGraphLinkId,
 } from "../../store/adminAppJSONFormation";
 import { hintsWithOrder } from "../../store/slices/hintsWithOrderSlice";
+import { useNavigate } from "react-router-dom";
 const GraphEditor = () => {
   const appOperations = useAppSelector(appCommonSliceRes);
   const adminAppJson = useAppSelector(adminAppJSON);
   const hints = useAppSelector(hintsWithOrder);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   localStorage.setItem(
     "LinkDirection",
     JSON.stringify(appOperations.linkDirection)
@@ -99,7 +101,6 @@ const GraphEditor = () => {
   }, []);
   // Clear LocalStorage on reload - Ends
   const adminAppJSONFormation = (event: any) => {
-    
     event.preventDefault();
     $("#" + iden.SaveGraph).click();
     console.log("Hints with Order -", hints);
@@ -401,7 +402,6 @@ const GraphEditor = () => {
     // If anything not working please uncomment this and comment on the paper mentioned - Ends
     return () => console.log("Component unmounted");
   }, []);
-
   useEffect(() => {
     $("#" + iden.graphChange).click();
     console.log("button triggered for reduxdf");
@@ -464,8 +464,18 @@ const GraphEditor = () => {
             className="col border border-info rounded"
             style={{ height: "700px", fontFamily: "Times New Roman" }}
           >
-            <header className="d-block p-2 bg-primary text-white text-center rounded blockquote">
+            <header className="d-block p-2 bg-primary text-white text-center justify-content-between align-items-center rounded blockquote">
               EDIT VIEW
+              <button
+                className="btn"
+                id="logout"
+                onClick={() => {
+                  console.log("logout triggered");
+                  localStorage.setItem("UserLogin","false");
+                  navigate("/");
+                }}
+                style={{ float: "right" }}
+              ><i className="fa fa-sign-out fa-2x text-white mr-2" style={{ margin:"-7px",marginLeft:"3px" }} aria-hidden="true"></i></button>
             </header>
             {showNameEdit && (
               <div className="card" style={{ width: "18rem" }}>
