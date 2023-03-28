@@ -30,7 +30,6 @@ import {
   setGraphLinkId,
 } from "../../store/adminAppJSONFormation";
 import { hintsWithOrder } from "../../store/slices/hintsWithOrderSlice";
-
 const GraphEditor = () => {
   const appOperations = useAppSelector(appCommonSliceRes);
   const adminAppJson = useAppSelector(adminAppJSON);
@@ -100,6 +99,7 @@ const GraphEditor = () => {
   }, []);
   // Clear LocalStorage on reload - Ends
   const adminAppJSONFormation = (event: any) => {
+    
     event.preventDefault();
     $("#" + iden.SaveGraph).click();
     console.log("Hints with Order -", hints);
@@ -404,7 +404,7 @@ const GraphEditor = () => {
 
   useEffect(() => {
     $("#" + iden.graphChange).click();
-    console.log("button triggered");
+    console.log("button triggered for reduxdf");
   }, [appOperations.linkDirection]);
 
   useEffect(() => {

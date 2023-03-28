@@ -1,24 +1,34 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { AppDispatch } from "../../../store/config/store";
+import { fetchUserDetails } from "../../../store/slices/loginAuthenticationSlice";
 import HeaderComponent from "../Layout/HeaderComponent";
 const UserLogin = () => {
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+  
+  // const loginAuth = useAppSelector((state) => state.loginAuthenticationSlice);
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleLoginSubmit = (event: any) => {
+  const handleLoginSubmit = async (event: any) => {
     event.preventDefault();
+    const results = await dispatch(fetchUserDetails({email:email,password:password}));
+    console.log("Results - ",results.payload.length);
     if (password === "") {
       setFieldErrors("Please enter your password");
-    } else if (
-      email === "sreeram.ramakrishnan@mailbox.tu-dresden.de" &&
-      password === "mathgrass"
+    } 
+    else if (
+      results.payload.length>0
     ) {
+      
       navigate("/user");
-    } else {
+    } 
+    else if(results.payload.length===0) {
       setFieldErrors(
         "You have no access to Admin interface. Contact Supervisor..."
       );

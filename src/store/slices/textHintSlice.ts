@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../config/store';
 
-interface MyState {
+interface TextHint {
   textHintValue: string[];
 }
 
-const initialState: MyState = {
+const initialState: TextHint = {
     textHintValue: [],
 };
 
