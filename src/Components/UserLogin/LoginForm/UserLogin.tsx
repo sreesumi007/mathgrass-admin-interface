@@ -37,7 +37,7 @@ const UserLogin = () => {
     } 
     else if(results.payload.length===0) {
       setFieldErrors(
-        "Your email or password is incorrect. If still you can't get it Contact Supervisor..."
+        "Email or Password is incorrect. Contact Supervisor for onboarding..."
       );
     }
 
