@@ -48,8 +48,6 @@ const GraphEditor = () => {
 
   const [nameExists, setNameExists] = useState(false);
   const [showNameEdit, setShowNameEdit] = useState(false);
-  const [jsonState, setJsonState] = useState("");
-  const [jsonCall, setJsonCall] = useState(false);
   const [showGraphicalHintAlert, setShowGraphicalHintAlert] = useState(false);
   const [hintModalShow, setHintModalShow] = useState(false);
 
@@ -275,8 +273,20 @@ const GraphEditor = () => {
 
     $("#" + iden.SaveGraph).click(() => {
       let json = JSON.stringify(graph.toJSON());
-      setJsonCall(true);
-      setJsonState(json);
+      const graphJson = graph.toJSON();
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: json,
+      };
+      fetch(
+        "http://localhost:8080/api/v1/userAccounts/graphJson",
+        requestOptions
+      )
+        .then((response) => response.text())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
+      console.log("Graph JSON - ", graph.toJSON());
       setShowNameEdit(false);
       dispatch(saveGraphBtn(false));
       dispatch(passGraphicalHintsOpen(false));
@@ -284,10 +294,10 @@ const GraphEditor = () => {
       dispatch(toggleAddHints(false));
       graph.clear();
       // localStorage.clear();
+      window.location.reload();
     });
 
     $("#" + iden.ClearGraph).click(() => {
-      setJsonCall(false);
       func.onClearGraphCall();
       disableSaveGraphBtn();
       setShowNameEdit(false);
@@ -471,11 +481,17 @@ const GraphEditor = () => {
                 id="logout"
                 onClick={() => {
                   console.log("logout triggered");
-                  localStorage.setItem("UserLogin","false");
+                  localStorage.setItem("UserLogin", "false");
                   navigate("/");
                 }}
                 style={{ float: "right" }}
-              ><i className="fa fa-sign-out fa-2x text-white mr-2" style={{ margin:"-7px",marginLeft:"3px" }} aria-hidden="true"></i></button>
+              >
+                <i
+                  className="fa fa-sign-out fa-2x text-white mr-2"
+                  style={{ margin: "-7px", marginLeft: "3px" }}
+                  aria-hidden="true"
+                ></i>
+              </button>
             </header>
             {showNameEdit && (
               <div className="card" style={{ width: "18rem" }}>
@@ -572,17 +588,6 @@ const GraphEditor = () => {
                 setHintModalShow(false);
               }}
             />
-            {jsonCall && (
-              <div className="card" style={{ width: "18rem" }}>
-                <div className="card-body">
-                  <h5 className="card-title text-center">JSON</h5>
-                  <h6 className="card-subtitle mb-2 text-muted text-center">
-                    Nodes with Links
-                  </h6>
-                  <p>{jsonState}</p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

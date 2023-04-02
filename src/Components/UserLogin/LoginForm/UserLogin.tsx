@@ -31,7 +31,7 @@ const UserLogin = () => {
         
       }
       else{
-        // window.location.href = "https://images.app.goo.gl/ouqb5zVbhb6LTbNX7"
+        // window.location.href = "http://localhost:3000/"
         navigate("/student");
       }
     } 
